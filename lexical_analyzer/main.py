@@ -39,11 +39,12 @@ WHITESPACE = {
 
 
 class Token:
-    def __init__(self, lexeme, row):
+    def __init__(self, lexeme, row, column):
         self.lexeme = lexeme
         self.token_type = None
         self.token = None
         self.row = row + 1
+        self.column = column + 1
         self.analyze_lexeme()
 
     def __str__(self):
@@ -103,12 +104,23 @@ def is_comment(line):
 
 
 def analyze_line(line, row):
-    tokens_str = line.split()
     tokens = []
-    for token_str in tokens_str:
-        # TODO: find the starting index of the token in the line
-        tokens.append(Token(token_str, row))
+    seen_words = set()
+    
+    for column, word in enumerate(line.split(), start=1):
+        if word in seen_words:
+            continue 
+        seen_words.add(word)
+
+        # Find all occurrences of the word in the line
+        word_occurrences = [pos for pos, char in enumerate(line) if line[pos:pos+len(word)] == word]
+        
+        for occurrence in word_occurrences:
+            tokens.append(Token(word, row, occurrence))
+        
+    tokens.sort(key=lambda x: x.column)
     return tokens
+
 
 
 def analyze_file(file_path):
@@ -123,7 +135,7 @@ def analyze_file(file_path):
 
 
 def main():
-    analyze_file('test.pl')
+    analyze_file('lexical_analyzer/test.pl')
 
 
 if __name__ == '__main__':
