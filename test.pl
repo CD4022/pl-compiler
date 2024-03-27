@@ -6,14 +6,24 @@ int _main ( )
     _i = 0 ;
     _inc = 2 ;
 
-    if ( _i < _j )
+    if (_i<_j)
     {
         _i = _i + _inc ;
         a = a * _i ;
     }
 
-    if ( a > 10 )
+    if (a>=10)
     {
-        print ( a + _i ) ;
+        print (a+ _i) ;
+    }
+
+    if (!a)
+    {
+    print(a);
+    }
+
+    if(a!=0)
+    {
+    print(!a);
     }
 }

@@ -117,13 +117,48 @@ def space_separator(line):
     for separator in SEPARATORS.keys():
         line = line.replace(separator, f' {separator} ')
     return line
-    
+
+
+def space_operator(line : str):
+    # find all double char operators
+    for operator in OPERATORS.keys():
+        if len(operator) == 2:
+            line = line.replace(operator, f' {operator} ')
+
+    # find all single char operators
+    for operator in OPERATORS.keys():
+        if len(operator) == 1:
+            if operator == '=':
+                occurrences = [pos for pos, char in enumerate(line) if line[pos:pos+len(operator)] == operator]
+                for occurrence in occurrences:
+                    if line[occurrence-1] != '!'\
+                            and line[occurrence-1] != '='\
+                            and line[occurrence-1] != '<'\
+                            and line[occurrence-1] != '>'\
+                            and line[occurrence+1] != '=':
+                        # replace the single occurrence of '=' with ' = '
+                        line = line[:occurrence] + ' = ' + line[occurrence+1:]
+
+            elif operator == '<' or operator == '>' or operator == '!':
+                occurrences = [pos for pos, char in enumerate(line) if line[pos:pos+len(operator)] == operator]
+                for occurrence in occurrences:
+                    if line[occurrence+1] != '=':
+                        # replace the single occurrence of '<' or '>' with ' < ' or ' > '
+                        line = line[:occurrence] + f' {operator} ' + line[occurrence+1:]
+
+            else:
+                line = line.replace(operator, f' {operator} ')
+    return line
+
 
 def analyze_line(line, row):
     tokens = []
     seen_words = set()
-    
-    for column, word in enumerate(line.split(), start=1):
+
+    spaced_line = space_separator(line)
+    spaced_line = space_operator(spaced_line)
+
+    for column, word in enumerate(spaced_line.split(), start=1):
         if word in seen_words:
             continue 
         seen_words.add(word)
@@ -138,7 +173,6 @@ def analyze_line(line, row):
     return tokens
 
 
-
 def analyze_file(file_path):
     with open(file_path, 'r') as file:
         for row, line in enumerate(file):
@@ -151,7 +185,7 @@ def analyze_file(file_path):
 
 
 def main():
-    analyze_file('lexical_analyzer/test.pl')
+    analyze_file('../test.pl')
 
 
 if __name__ == '__main__':
