@@ -41,6 +41,7 @@ WHITESPACE = {
     '\t': 'TAB'
 }
 
+ALPHABET_ = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
 
 class Token:
     def __init__(self, lexeme, row, column):
@@ -119,41 +120,55 @@ def space_separator(line):
     return line
 
 
-def space_operator(line : str):
-    # find all double char operators
-    for operator in OPERATORS.keys():
-        if len(operator) == 2:
-            line = line.replace(operator, f' {operator} ')
+# def space_operator(line : str):
+#     # find all double char operators
+#     for operator in OPERATORS.keys():
+#         if len(operator) == 2:
+#             line = line.replace(operator, f' {operator} ')
 
-    # find all single char operators
-    for operator in OPERATORS.keys():
-        if len(operator) == 1:
-            if operator == '=':
-                occurrences = [pos for pos, char in enumerate(line) if line[pos:pos+len(operator)] == operator]
-                for occurrence in occurrences:
-                    if line[occurrence-1] != '!'\
-                            and line[occurrence-1] != '='\
-                            and line[occurrence-1] != '<'\
-                            and line[occurrence-1] != '>'\
-                            and line[occurrence+1] != '=':
-                        # replace the single occurrence of '=' with ' = '
-                        line = line[:occurrence] + ' = ' + line[occurrence+1:]
+#     # find all single char operators
+#     for operator in OPERATORS.keys():
+#         if len(operator) == 1:
+#             if operator == '=':
+#                 occurrences = [pos for pos, char in enumerate(line) if line[pos:pos+len(operator)] == operator]
+#                 for occurrence in occurrences:
+#                     if line[occurrence-1] != '!'\
+#                             and line[occurrence-1] != '='\
+#                             and line[occurrence-1] != '<'\
+#                             and line[occurrence-1] != '>'\
+#                             and line[occurrence+1] != '=':
+#                         # replace the single occurrence of '=' with ' = '
+#                         line = line[:occurrence] + ' = ' + line[occurrence+1:]
 
-            elif operator == '<' or operator == '>' or operator == '!':
-                occurrences = [pos for pos, char in enumerate(line) if line[pos:pos+len(operator)] == operator]
-                for occurrence in occurrences:
-                    if line[occurrence+1] != '=':
-                        # replace the single occurrence of '<' or '>' with ' < ' or ' > '
-                        line = line[:occurrence] + f' {operator} ' + line[occurrence+1:]
+#             elif operator == '<' or operator == '>' or operator == '!':
+#                 occurrences = [pos for pos, char in enumerate(line) if line[pos:pos+len(operator)] == operator]
+#                 for occurrence in occurrences:
+#                     if line[occurrence+1] != '=':
+#                         # replace the single occurrence of '<' or '>' with ' < ' or ' > '
+#                         line = line[:occurrence] + f' {operator} ' + line[occurrence+1:]
 
-            else:
-                line = line.replace(operator, f' {operator} ')
+#             else:
+#                 line = line.replace(operator, f' {operator} ')
+#     return line
+
+def space_operator(line):
+    for i, char in enumerate(line):
+        if char in OPERATORS.keys():
+            if ((char == '=' and line[i+1] == '=' or line[i-1] == '=') or 
+            (char == '>' and line[i+1] == '=' or char == '=' and line[i-1] == '>') or 
+            (char == '<' and line[i+1] == '=' or char == '=' and line[i-1] == '<') or 
+            (char == '!' and line[i+1] == '=' or char == '=' and line[i-1] == '!')):
+                line = line.replace(line[i:i+2], f' {line[i]}{line[i+1]} ')
+                continue
+            
+            line = line.replace(char, f' {char} ')
     return line
-
 
 def analyze_line(line, row):
     tokens = []
     seen_words = set()
+
+    line = line + ' '
 
     spaced_line = space_separator(line)
     spaced_line = space_operator(spaced_line)
