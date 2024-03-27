@@ -155,15 +155,31 @@ def space_separator(line):
 def space_operator(line):
     for i, char in enumerate(line):
         if char in OPERATORS.keys():
-            if ((char == '=' and line[i+1] == '=' or line[i-1] == '=') or 
-            (char == '>' and line[i+1] == '=' or char == '=' and line[i-1] == '>') or 
-            (char == '<' and line[i+1] == '=' or char == '=' and line[i-1] == '<') or 
+            if ((char == '=' and line[i+1] == '=' or line[i-1] == '=') or
+            (char == '>' and line[i+1] == '=' or char == '=' and line[i-1] == '>') or
+            (char == '<' and line[i+1] == '=' or char == '=' and line[i-1] == '<') or
             (char == '!' and line[i+1] == '=' or char == '=' and line[i-1] == '!')):
                 line = line.replace(line[i:i+2], f' {line[i]}{line[i+1]} ')
                 continue
             
             line = line.replace(char, f' {char} ')
     return line
+
+
+def find_word_occurrences(word: str, line):
+    occurrences = []
+    # check if word contains reserved chars
+    contains_reserved_char = False
+    for char in RESERVED_CHARACTERS:
+        if char in word:
+            contains_reserved_char = True
+            break
+    for pos, char in enumerate(line):
+        if (line[pos:pos+len(word)] == word and ((line[pos-1] in RESERVED_CHARACTERS
+                                                 and line[pos+len(word)] in RESERVED_CHARACTERS)
+                                                 or contains_reserved_char)):
+            occurrences.append(pos)
+    return occurrences
 
 
 def analyze_line(line, row):
@@ -181,9 +197,11 @@ def analyze_line(line, row):
         seen_words.add(word)
 
         # Find all occurrences of the word in the line
-        word_occurrences = [pos for pos, char in enumerate(line) if line[pos:pos+len(word)] == word and
-                            (line[pos-1] in RESERVED_CHARACTERS and line[pos+len(word)] in RESERVED_CHARACTERS)]
-        
+        # word_occurrences = [pos for pos, char in enumerate(line) if line[pos:pos+len(word)] == word and
+        #                     (line[pos-1] in RESERVED_CHARACTERS and line[pos+len(word)] in RESERVED_CHARACTERS)]
+
+        word_occurrences = find_word_occurrences(word, line)
+
         for occurrence in word_occurrences:
             tokens.append(Token(word, row, occurrence))
         
