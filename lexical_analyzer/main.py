@@ -27,9 +27,13 @@ SEPARATORS = {
     '[': 'LSB',
     ']': 'RSB',
     ';': 'SEMICOLON',
-    ',': 'COMMA',
+    ',': 'COMMA'
+}
+
+QUOTATIONS = {
     '"': 'D-QUOTE',
-    '\'': 'S-QUOTE'}
+    '\'': 'S-QUOTE'
+}
 
 WHITESPACE = {
     ' ': 'WS',
@@ -59,6 +63,9 @@ class Token:
     def is_separator(self):
         return self.lexeme in SEPARATORS.keys()
 
+    def is_quotation(self):
+        return self.lexeme in QUOTATIONS.keys()
+
     def is_whitespace(self):
         return self.lexeme in WHITESPACE.keys()
 
@@ -86,6 +93,9 @@ class Token:
         elif self.is_separator():
             self.token_type = 'SEPARATOR'
             self.token = SEPARATORS[self.lexeme]
+        elif self.is_quotation():
+            self.token_type = 'QUOTATION'
+            self.token = QUOTATIONS[self.lexeme]
         elif self.is_whitespace():
             self.token_type = 'WHITESPACE'
             self.token = WHITESPACE[self.lexeme]
@@ -102,6 +112,12 @@ class Token:
 def is_comment(line):
     return line.startswith('//')
 
+
+def space_separator(line):
+    for separator in SEPARATORS.keys():
+        line = line.replace(separator, f' {separator} ')
+    return line
+    
 
 def analyze_line(line, row):
     tokens = []
