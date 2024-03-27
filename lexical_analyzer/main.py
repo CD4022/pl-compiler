@@ -41,7 +41,8 @@ WHITESPACE = {
     '\t': 'TAB'
 }
 
-ALPHABET_ = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
+RESERVED_CHARACTERS = '(){}[];,+-*/%<>=!&|"\' \n\t'
+
 
 class Token:
     def __init__(self, lexeme, row, column):
@@ -164,6 +165,7 @@ def space_operator(line):
             line = line.replace(char, f' {char} ')
     return line
 
+
 def analyze_line(line, row):
     tokens = []
     seen_words = set()
@@ -179,7 +181,8 @@ def analyze_line(line, row):
         seen_words.add(word)
 
         # Find all occurrences of the word in the line
-        word_occurrences = [pos for pos, char in enumerate(line) if line[pos:pos+len(word)] == word]
+        word_occurrences = [pos for pos, char in enumerate(line) if line[pos:pos+len(word)] == word and
+                            (line[pos-1] in RESERVED_CHARACTERS and line[pos+len(word)] in RESERVED_CHARACTERS)]
         
         for occurrence in word_occurrences:
             tokens.append(Token(word, row, occurrence))
