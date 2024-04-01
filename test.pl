@@ -4,7 +4,7 @@ int _main()
     a = 1 ;
     int _i , _inc , _j ;
     _i = 0 ;
-    _inc = 2 ;
+    _inc = 2 ;// this is a comment
 
     if (_i<_j)
     {

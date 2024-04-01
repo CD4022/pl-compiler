@@ -85,6 +85,9 @@ class Token:
             return True
         return False
 
+    def is_comment(self):
+        return self.lexeme.startswith('//')
+
     def analyze_lexeme(self):
         if self.is_key_word():
             self.token_type = 'KEY_WORD'
@@ -107,6 +110,9 @@ class Token:
         elif self.is_constant():
             self.token_type = 'CONSTANT'
             # TODO: check if constant is a number or a char
+        elif self.is_comment():
+            self.token_type = 'COMMENT'
+            self.token = 'COMMENT'
         else:
             raise ValueError(f'Invalid token: {self.lexeme}')
 
@@ -185,6 +191,11 @@ def find_word_occurrences(word: str, line):
 def analyze_line(line, row):
     tokens = []
     seen_words = set()
+
+    # split by // and take the first part as the line and the rest as the comment
+    if '//' in line:
+        line, comment = line.split('//')
+        tokens.append(Token('//' + comment, row, len(line) + 1))
 
     line = line + ' '
 
