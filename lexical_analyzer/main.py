@@ -1,45 +1,4 @@
-
-
-KEY_WORDS = ['bool', 'break', 'char', 'continue', 'else', 'false', 'for', 'if', 'int', 'print', 'return', 'true']
-OPERATORS = {
-    '+': 'PLUS',
-    '-': 'MINUS',
-    '*': 'MULT',
-    '/': 'DIV',
-    '%': 'MOD',
-    '==': 'EQUALS',
-    '!=': 'NOT-EQUALS',
-    '>': 'GT',
-    '<': 'LT',
-    '>=': 'GE',
-    '<=': 'LE',
-    '&&': 'AND',
-    '||': 'OR',
-    '!': 'NOT',
-    '=': 'ASSIGN'
-}
-
-SEPARATORS = {
-    '(': 'LP',
-    ')': 'RP',
-    '{': 'LCB',
-    '}': 'RCB',
-    '[': 'LSB',
-    ']': 'RSB',
-    ';': 'SEMICOLON',
-    ',': 'COMMA'
-}
-
-QUOTATIONS = {
-    '"': 'D-QUOTE',
-    '\'': 'S-QUOTE'
-}
-
-WHITESPACE = {
-    ' ': 'WS',
-    '\n': 'NEWLINE',
-    '\t': 'TAB'
-}
+from constants import *
 
 RESERVED_CHARACTERS = '(){}[];,+-*/%<>=!&|"\' \n\t'
 
