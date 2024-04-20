@@ -7,6 +7,7 @@ KEY_WORDS.sort()
 
 # Identifier allowed characters
 ID_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
+HEX_DIGITS = '0123456789abcdefABCDEF'
 
 OPERATORS = {
     '+': 'PLUS',
