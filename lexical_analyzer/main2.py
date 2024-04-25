@@ -276,6 +276,7 @@ def analyze_file(file_path):
             col = 0
             while col < len(line):
                 if line[col] in WHITESPACE:
+                    tokens.append(Token(line[col], row, col, WHITESPACE[line[col]], file_index))
                     col += 1
                     continue
 
