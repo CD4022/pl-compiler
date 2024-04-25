@@ -1,3 +1,4 @@
+from sys import argv
 from constants import *
 
 
@@ -310,7 +311,7 @@ def analyze_file(file_path):
                     tokens.append(token)
                     continue
 
-                tokens.append(Error(line[col], row, col, 'Invalid character'))
+                tokens.append(Error(line[col], row, col, 'Invalid character', file_index))
                 col += 1
 
             file_index += col
@@ -319,7 +320,11 @@ def analyze_file(file_path):
 
 
 def main():
-    tokens = analyze_file('../test.pl')
+    file_path = argv[1]
+    if not file_path:
+        print('Please provide a file path')
+        return
+    tokens = analyze_file(file_path)
     err_count = 0
     for token in tokens:
         if isinstance(token, Error):
