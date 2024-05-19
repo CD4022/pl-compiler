@@ -105,7 +105,7 @@ def LeftFactoring(rulesDiction):
 # pass rule in first function
 def first(rule):
     global rules, nonterm_userdef, \
-        term_userdef, diction, firsts
+        term_userdef, LF_GRAMMAR, FIRSTS
     # recursion base condition
     # (for terminal or epsilon)
     if len(rule) != 0 and (rule is not None):
@@ -164,7 +164,7 @@ def first(rule):
 # - Non-Terminal whose Follow we want to compute
 def follow(nt):
     global start_symbol, rules, nonterm_userdef, \
-        term_userdef, diction, firsts, follows
+        term_userdef, LF_GRAMMAR, FIRSTS, FOLLOWS
     # for start symbol return $ (recursion base case)
 
     solset = set()
@@ -225,7 +225,7 @@ def follow(nt):
 
 def computeAllFirsts():
     global rules, nonterm_userdef, \
-        term_userdef, diction, firsts
+        term_userdef, LF_GRAMMAR, FIRSTS
     for rule in rules:
         k = rule.split("->")
         # remove un-necessary spaces
@@ -280,7 +280,7 @@ def computeAllFirsts():
 
 def computeAllFollows():
     global start_symbol, rules, nonterm_userdef,\
-        term_userdef, diction, firsts, follows
+        term_userdef, LF_GRAMMAR, FIRSTS, FOLLOWS
     for NT in diction:
         solset = set()
         sol = follow(NT)
@@ -301,7 +301,7 @@ def computeAllFollows():
 # create parse table
 def createParseTable():
     import copy
-    global diction, firsts, follows, term_userdef
+    global diction, firsts, FOLLOWS, term_userdef
     print("\nFirsts and Follow Result table\n")
 
     # find space size
@@ -434,7 +434,7 @@ def validateStringUsingStackBuffer(parsing_table, grammarll1,
             return "\nValid String!"
         elif stack[0] not in term_userdef:
             # take font of buffer (y) and tos (x)
-            x = list(diction.keys()).index(stack[0])
+            x = list(LF_GRAMMAR.keys()).index(stack[0])
             y = table_term_list.index(buffer[-1])
             if parsing_table[x][y] != '':
                 # format table entry received
@@ -562,15 +562,15 @@ sample_input_string="a r k O"
 
 # diction - store rules inputted
 # firsts - store computed firsts
-diction = {}
-firsts = {}
-follows = {}
+LF_GRAMMAR = {}
+FIRSTS = {}
+FOLLOWS = {}
 
 # computes all FIRSTs for all non terminals
 computeAllFirsts()
 # assuming first rule has start_symbol
 # start symbol can be modified in below line of code
-start_symbol = list(diction.keys())[0]
+start_symbol = list(LF_GRAMMAR.keys())[0]
 # computes all FOLLOWs for all occurrences
 computeAllFollows()
 # generate formatted first and follow table
@@ -584,7 +584,7 @@ if sample_input_string != None:
                                             tabTerm, sample_input_string,
                                             term_userdef,start_symbol)
     print(validity)
-    print(diction)
+    print(LF_GRAMMAR)
 else:
     print("\nNo input String detected")
 
