@@ -49,10 +49,10 @@ GRAMMAR = {
 }
 
 
-with open('lf.json') as f:
+with open('syntax_analyzer/lf.json') as f:
     LF_GRAMMAR = json.load(f)
 
-with open('firsts.json') as f:
+with open('syntax_analyzer/firsts.json') as f:
     FIRSTS = json.load(f)
 
 FOLLOWS = dict()
@@ -165,68 +165,36 @@ def first(rule):
                 return f_res
 
 
-def follow(nt):
-    global LF_GRAMMAR, FIRSTS
-    # for start symbol return $ (recursion base case)
-    solset = set()
-    if nt == "program":
-        # return '$'
-        solset.add('$')
+def follow(NT):
+    global LF_GRAMMAR, FIRSTS, FOLLOWS
 
-    # check all occurrences
-    # solset - is result of computed 'follow' so far
-
-    # For input, check in all rules
-    for curNT in LF_GRAMMAR:
-        rhs = LF_GRAMMAR[curNT]
-        # go for all productions of NT
-        res = []
-        for subrule in rhs:
-            if nt in subrule:
-                # call for all occurrences on
-                # - non-terminal in subrule
-                while nt in subrule:
-                    index_nt = subrule.index(nt)
-                    subrule = subrule[index_nt + 1:]
-                    # empty condition - call follow on LHS
-                    if len(subrule) != 0:
-                        # compute first if symbols on
-                        # - RHS of target Non-Terminal exists
-                        res = first(subrule)
-                        # if epsilon in result apply rule
-                        # - (A->aBX)- follow of -
-                        # - follow(B)=(first(X)-{ep}) U follow(A)
-                        if 'E' in res:
-                            newList = []
-                            res.remove('E')
-                            ansNew = follow(curNT)
-                            if ansNew is not None:
-                                if type(ansNew) is list:
-                                    newList = res + ansNew
-                                else:
-                                    newList = res + [ansNew]
-                            else:
-                                newList = res
-                            res = newList
+    if NT == 'program':
+        return ['$']
+    
+    # if already computed return
+    if NT in FOLLOWS:
+        return FOLLOWS[NT]
+    
+    # initialize result set
+    res = set()
+    for key in LF_GRAMMAR:
+        for rule in LF_GRAMMAR[key]:
+            if NT in rule:
+                idx = rule.index(NT)
+                if idx == len(rule) - 1:
+                    res = res.union(follow(key))
+                else:
+                    if rule[idx + 1].startswith('T_'):
+                        res.add(rule[idx + 1])
                     else:
-                        # when nothing in RHS, go circular and take follow of LHS
-                        # only if (NT in LHS)!=curNT
-                        if nt != curNT:
-                            res = follow(curNT)
-
-                    # add follow result in set form
-                    if res is not None:
-                        if type(res) is list:
-                            for g in res:
-                                solset.add(g)
+                        f = first(rule[idx + 1:])
+                        if 'E' in f:
+                            f.remove('E')
+                            res = res.union(f)
+                            res = res.union(follow(key))
                         else:
-                            solset.add(res)
-    return list(solset)
-
-
-# def follow2(rule):
-#     fo
-#     if rule == 'program':
+                            res = res.union(f)
+    return res
 
 
 def compute_all_follows():
@@ -290,7 +258,7 @@ def create_follows_file():
 
     # save the FOLLOWS dict to follows.json
     with open('follows.json', 'w') as file:
-        json.dump(FIRSTS, file, indent=4)
+        json.dump(FOLLOWS, file, indent=4)
 
 
 if __name__ == '__main__':
