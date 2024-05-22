@@ -6,53 +6,58 @@ GRAMMAR = {
              ['return_stmt', 'T_SEMICOLON'], ['T_CONTINUE', 'T_SEMICOLON'], ['T_BREAK', 'T_SEMICOLON'], ['block_expr']],
     'declare': [['type', 'id_list']],
     'type': [['T_INT'], ['T_CHAR'], ['T_BOOL'], ['T_VOID']],
-    'id_list': [['assign_expr', 'T_COMMA', 'id_list'], ['id_name', 'T_COMMA', 'id_list'], ['id_name'], ['assign_expr']],
     'id_name': [['T_ID', 'T_LSB', 'calc_expr', 'T_RSB'], ['T_ID']],
+    "id_list": [["id_list''", "id_list'"]],
+    "id_list'": [["T_COMMA", "id_list''", "id_list'"], ["E"]],
+    "id_list''": [["id_name"], ["assign_expr"]],
     'func_call': [['T_ID', 'T_LP', 'par_list', 'T_RP']],
-    'par_list': [['par', 'T_COMMA', 'par_list'], ['E']],
-    'par': [['calc_expr'], ['comp_expr']],
-    'assign_expr': [['id_name', 'T_ASSIGN', 'calc_expr'], ['id_name', 'T_ASSIGN', 'comp_expr']],
-    'calc_expr': [['term', 'calc_expr2']],
-    'clac_expr2': [['low_bin_op', 'term', 'calc_expr2'], ['E']],
-    'term': [['fact', 'term2']],
-    'term2': [['high_bin_op', 'fact', 'term2'], ['E']],
+    'par_list': [["expr", "par_list'"], ['E']],
+    "par_list'": [["T_COMMA", "expr", "par_list'"], ["E"]],
+    'expr': [['calc_expr'], ['comp_expr']],
+    'assign_expr': [['id_name', 'T_ASSIGN', 'expr']],
+    'calc_expr': [['term', "calc_expr'"]],
+    "calc_expr'": [['low_bin_op', 'term', "calc_expr'"], ['E']],
+    'term': [['fact', "term'"]],
+    "term'": [['high_bin_op', 'fact', "term'"], ['E']],
     'fact': [['T_LP', 'calc_expr', 'T_RP'], ['un_expr']],
     'un_expr': [['un_op', 'value'], ['value']],
     'value': [['id_name'], ['imm'], ['func_call'], ['logic_imm']],
+    'imm': [['T_STR_VAL'], ['T_CHAR_VAL'], ['T_DEC_VAL'], ['T_HEX_VAL']],
     'logic_imm': [['T_TRUE'], ['T_FALSE']],
     'low_bin_op': [['T_PLUS'], ['T_MINUS']],
     'high_bin_op': [['T_MULT'], ['T_DIV'], ['T_MOD']],
     'un_op': [['T_PLUS'], ['T_MINUS'], ['T_NOT']],
     'block_expr': [['if_block'], ['for_block']],
-    'if_block': [['T_IF', 'T_LP', 'comp_expr', 'T_RP', 'T_LCB', 'block', 'T_RCB'],
-                 ['T_IF', 'T_LP', 'comp_expr', 'T_RP', 'T_LCB', 'block', 'T_RCB', 'then_block']],
-    'then_block': [['else_if_block'], ['T_ELSE', 'T_LCB', 'block', 'T_RCB'], ['else_if_block', 'then_block']],
-    'else_if_block': [['T_ELSE', 'T_IF', 'T_LP', 'comp_expr', 'T_RP', 'T_LCB', 'block', 'T_RCB']],
+    'if_block': [['T_IF', 'T_LP', 'comp_expr', 'T_RP', 'T_LCB', 'block', 'T_RCB', "else_if_blocks", 'else_block']],
+    'else_if_blocks': [['T_ELSE', 'T_IF', 'T_LP', 'comp_expr', 'T_RP', 'T_LCB', 'block', 'T_RCB', 'else_if_blocks'],
+                       ['E']],
+    'else_block': [['T_ELSE', 'T_LCB', 'block', 'T_RCB'], ['E']],
     'for_block': [['T_FOR', 'T_LP', 'for_stmt', 'T_RP', 'T_LCB', 'block', 'T_RCB']],
     'for_stmt': [['for_init', 'T_SEMICOLON', 'for_cond', 'T_SEMICOLON', 'for_step']],
     'for_init': [['declare'], ['assign_expr'], ['E']],
     'for_cond': [['comp_expr'], ['E']],
     'for_step': [['assign_expr'], ['E']],
-    'comp_expr': [['logic_term', 'comp_expr2']],
-    'comp_expr2': [['comp_bin_op', 'logic_term', 'comp_expr2'], ['E']],
-    'logic_term': [['logic_fact', 'logic_term2']],
-    'logic_term2': [['logic_bin_op', 'logic_fact', 'logic_term2'], ['E']],
+    'comp_expr': [['logic_term', "comp_expr'"]],
+    "comp_expr'": [['comp_bin_op', 'logic_term', "comp_expr'"], ['E']],
+    'logic_term': [['logic_fact', "logic_term'"]],
+    "logic_term'": [['logic_bin_op', 'logic_fact', "logic_term'"], ['E']],
     'logic_fact': [['T_LP', 'comp_expr', 'T_RP'], ['un_expr']],
     'comp_bin_op': [['T_EQUALS'], ['T_NOT_EQUALS'], ['T_GT'], ['T_LT'], ['T_GE'], ['T_LE']],
     'logic_bin_op': [['T_AND'], ['T_OR']],
     'func': [['type', 'T_ID', 'T_LP', 'argument_list', 'T_RP', 'T_LCB', 'block', 'T_RCB']],
-    'argument_list': [['argument', 'T_COMMA', 'argument_list'], ['argument']],
+    'argument_list': [["argument", "argument_list'"], ['E']],
+    "argument_list'": [["T_COMMA", "argument", "argument_list'"], ["E"]],
     'argument': [['type', 'id_name']],
-    'block': [['stmt', 'block'], ['stmt']],
+    'block': [['stmt', 'block'], ['E']],
     'return_stmt': [['T_RETURN', 'return_val']],
-    'return_val': [['calc_expr'], ['comp_expr'], ['E']]
+    'return_val': [['expr'], ['E']]
 }
 
 
-with open('syntax_analyzer/lf.json') as f:
+with open('lf.json') as f:
     LF_GRAMMAR = json.load(f)
 
-with open('syntax_analyzer/firsts.json') as f:
+with open('firsts.json') as f:
     FIRSTS = json.load(f)
 
 FOLLOWS = dict()
@@ -165,10 +170,19 @@ def first(rule):
                 return f_res
 
 
+# FOLLOW_STACK = []
+
+
 def follow(NT):
     global LF_GRAMMAR, FIRSTS, FOLLOWS
 
+    # if NT in FOLLOW_STACK:
+    #     return set()
+
+    # FOLLOW_STACK.append(NT)
+
     if NT == 'program':
+        # FOLLOW_STACK.pop()
         return ['$']
     
     # if already computed return
@@ -182,18 +196,24 @@ def follow(NT):
             if NT in rule:
                 idx = rule.index(NT)
                 if idx == len(rule) - 1:
-                    res = res.union(follow(key))
+                    print(key)
+                    if key != NT:
+                        res = res.union(follow(key))
                 else:
                     if rule[idx + 1].startswith('T_'):
                         res.add(rule[idx + 1])
                     else:
-                        f = first(rule[idx + 1:])
+                        f = FIRSTS[rule[idx + 1]]
                         if 'E' in f:
                             f.remove('E')
                             res = res.union(f)
                             res = res.union(follow(key))
+
                         else:
                             res = res.union(f)
+
+    FOLLOWS[NT] = res
+    # FOLLOW_STACK.pop()
     return res
 
 
@@ -201,10 +221,7 @@ def compute_all_follows():
     global LF_GRAMMAR, FIRSTS, FOLLOWS
     for NT in LF_GRAMMAR:
         solset = set()
-        try:
-            sol = follow(NT)
-        except:
-            print(FOLLOWS)
+        sol = follow(NT)
         if sol is not None:
             for g in sol:
                 solset.add(g)
@@ -267,6 +284,7 @@ if __name__ == '__main__':
     # create_firsts_file()
 
     create_follows_file()
+
 
 
 

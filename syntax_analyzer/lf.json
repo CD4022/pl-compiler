@@ -61,25 +61,6 @@
             "T_VOID"
         ]
     ],
-    "id_list": [
-        [
-            "assign_expr",
-            "id_list'"
-        ],
-        [
-            "id_name",
-            "id_list'"
-        ]
-    ],
-    "id_list'": [
-        [
-            "T_COMMA",
-            "id_list"
-        ],
-        [
-            "E"
-        ]
-    ],
     "id_name": [
         [
             "T_ID",
@@ -96,6 +77,30 @@
             "E"
         ]
     ],
+    "id_list": [
+        [
+            "id_list''",
+            "id_list'"
+        ]
+    ],
+    "id_list'": [
+        [
+            "T_COMMA",
+            "id_list''",
+            "id_list'"
+        ],
+        [
+            "E"
+        ]
+    ],
+    "id_list''": [
+        [
+            "id_name"
+        ],
+        [
+            "assign_expr"
+        ]
+    ],
     "func_call": [
         [
             "T_ID",
@@ -106,15 +111,24 @@
     ],
     "par_list": [
         [
-            "par",
-            "T_COMMA",
-            "par_list"
+            "expr",
+            "par_list'"
         ],
         [
             "E"
         ]
     ],
-    "par": [
+    "par_list'": [
+        [
+            "T_COMMA",
+            "expr",
+            "par_list'"
+        ],
+        [
+            "E"
+        ]
+    ],
+    "expr": [
         [
             "calc_expr"
         ],
@@ -125,30 +139,21 @@
     "assign_expr": [
         [
             "id_name",
-            "assign_expr'"
-        ]
-    ],
-    "assign_expr'": [
-        [
             "T_ASSIGN",
-            "calc_expr"
-        ],
-        [
-            "T_ASSIGN",
-            "comp_expr"
+            "expr"
         ]
     ],
     "calc_expr": [
         [
             "term",
-            "calc_expr2"
+            "calc_expr'"
         ]
     ],
-    "clac_expr2": [
+    "calc_expr'": [
         [
             "low_bin_op",
             "term",
-            "calc_expr2"
+            "calc_expr'"
         ],
         [
             "E"
@@ -157,14 +162,14 @@
     "term": [
         [
             "fact",
-            "term2"
+            "term'"
         ]
     ],
-    "term2": [
+    "term'": [
         [
             "high_bin_op",
             "fact",
-            "term2"
+            "term'"
         ],
         [
             "E"
@@ -194,13 +199,27 @@
             "id_name"
         ],
         [
-            "T_VAL"
+            "imm"
         ],
         [
             "func_call"
         ],
         [
             "logic_imm"
+        ]
+    ],
+    "imm": [
+        [
+            "T_STR_VAL"
+        ],
+        [
+            "T_CHAR_VAL"
+        ],
+        [
+            "T_DEC_VAL"
+        ],
+        [
+            "T_HEX_VAL"
         ]
     ],
     "logic_imm": [
@@ -258,38 +277,11 @@
             "T_LCB",
             "block",
             "T_RCB",
-            "if_block'"
+            "else_if_blocks",
+            "else_block"
         ]
     ],
-    "if_block'": [
-        [
-            "E"
-        ],
-        [
-            "then_block"
-        ]
-    ],
-    "then_block": [
-        [
-            "else_if_block",
-            "then_block'"
-        ],
-        [
-            "T_ELSE",
-            "T_LCB",
-            "block",
-            "T_RCB"
-        ]
-    ],
-    "then_block'": [
-        [
-            "E"
-        ],
-        [
-            "then_block"
-        ]
-    ],
-    "else_if_block": [
+    "else_if_blocks": [
         [
             "T_ELSE",
             "T_IF",
@@ -298,7 +290,22 @@
             "T_RP",
             "T_LCB",
             "block",
+            "T_RCB",
+            "else_if_blocks"
+        ],
+        [
+            "E"
+        ]
+    ],
+    "else_block": [
+        [
+            "T_ELSE",
+            "T_LCB",
+            "block",
             "T_RCB"
+        ],
+        [
+            "E"
         ]
     ],
     "for_block": [
@@ -351,14 +358,14 @@
     "comp_expr": [
         [
             "logic_term",
-            "comp_expr2"
+            "comp_expr'"
         ]
     ],
-    "comp_expr2": [
+    "comp_expr'": [
         [
             "comp_bin_op",
             "logic_term",
-            "comp_expr2"
+            "comp_expr'"
         ],
         [
             "E"
@@ -367,14 +374,14 @@
     "logic_term": [
         [
             "logic_fact",
-            "logic_term2"
+            "logic_term'"
         ]
     ],
-    "logic_term2": [
+    "logic_term'": [
         [
             "logic_bin_op",
             "logic_fact",
-            "logic_term2"
+            "logic_term'"
         ],
         [
             "E"
@@ -434,12 +441,16 @@
         [
             "argument",
             "argument_list'"
+        ],
+        [
+            "E"
         ]
     ],
     "argument_list'": [
         [
             "T_COMMA",
-            "argument_list"
+            "argument",
+            "argument_list'"
         ],
         [
             "E"
@@ -454,11 +465,6 @@
     "block": [
         [
             "stmt",
-            "block'"
-        ]
-    ],
-    "block'": [
-        [
             "block"
         ],
         [
@@ -473,10 +479,7 @@
     ],
     "return_val": [
         [
-            "calc_expr"
-        ],
-        [
-            "comp_expr"
+            "expr"
         ],
         [
             "E"
