@@ -1,30 +1,33 @@
 import json
 
 GRAMMAR = {
-    'program': [['stmt', 'program'], ['func', 'program'], ['E']],
-    'stmt': [['declare', 'T_SEMICOLON'], ['func_call', 'T_SEMICOLON'], ['assign_expr', 'T_SEMICOLON'],
-             ['return_stmt', 'T_SEMICOLON'], ['T_CONTINUE', 'T_SEMICOLON'], ['T_BREAK', 'T_SEMICOLON'], ['block_expr']],
-    'declare': [['type', 'id_list']],
+    'program': [['stmt', 'program'], ['declaration', 'program'], ['E']],
+    'declaration': [['type', 'T_ID', "dec'"]],
+    "dec'": [['func'], ["id_name'", "assign_expr", "id_list'", 'T_SEMICOLON']],
+    'stmt': [['T_ID', "stmt'"], ['return_stmt', 'T_SEMICOLON'], ['T_CONTINUE', 'T_SEMICOLON'],
+             ['T_BREAK', 'T_SEMICOLON'], ['block_expr']],
+    "stmt'": [['func_call', 'T_SEMICOLON'], ["id_name'", 'assign_expr', 'T_SEMICOLON']],
     'type': [['T_INT'], ['T_CHAR'], ['T_BOOL'], ['T_VOID']],
-    'id_name': [['T_ID', 'T_LSB', 'calc_expr', 'T_RSB'], ['T_ID']],
+    'id_name': [['T_ID', "id_name'"]],
+    "id_name'": [["T_LSB", "calc_expr", "T_RSB"], ["E"]],
     "id_list": [["id_list''", "id_list'"]],
     "id_list'": [["T_COMMA", "id_list''", "id_list'"], ["E"]],
-    "id_list''": [["id_name"], ["assign_expr"]],
-    'func_call': [['T_ID', 'T_LP', 'par_list', 'T_RP']],
+    "id_list''": [["id_name", "id_list'''"]],
+    "id_list'''": [["E"], ["assign_expr"]],
+    'func_call': [['T_LP', 'par_list', 'T_RP']],
     'par_list': [["expr", "par_list'"], ['E']],
     "par_list'": [["T_COMMA", "expr", "par_list'"], ["E"]],
-    'expr': [['calc_expr'], ['comp_expr']],
-    'assign_expr': [['id_name', 'T_ASSIGN', 'expr']],
-    'calc_expr': [['term', "calc_expr'"]],
-    "calc_expr'": [['low_bin_op', 'term', "calc_expr'"], ['E']],
+    'assign_expr': [['T_ASSIGN', 'expr']],
+    'expr': [['term', "expr'"]],
+    "expr'": [['low_bin_op', 'term', "expr'"], ['E']],
     'term': [['fact', "term'"]],
     "term'": [['high_bin_op', 'fact', "term'"], ['E']],
-    'fact': [['T_LP', 'calc_expr', 'T_RP'], ['un_expr']],
+    'fact': [['T_LP', 'expr', 'T_RP'], ['un_expr']],
     'un_expr': [['un_op', 'value'], ['value']],
-    'value': [['id_name'], ['imm'], ['func_call'], ['logic_imm']],
+    'value': [['T_ID', "id_name'"], ['imm'], ['T_ID', 'func_call'], ['logic_imm']],
     'imm': [['T_STR_VAL'], ['T_CHAR_VAL'], ['T_DEC_VAL'], ['T_HEX_VAL']],
     'logic_imm': [['T_TRUE'], ['T_FALSE']],
-    'low_bin_op': [['T_PLUS'], ['T_MINUS']],
+    'low_bin_op': [['T_PLUS'], ['T_MINUS'], ['T_OR'], ['T_AND']],
     'high_bin_op': [['T_MULT'], ['T_DIV'], ['T_MOD']],
     'un_op': [['T_PLUS'], ['T_MINUS'], ['T_NOT']],
     'block_expr': [['if_block'], ['for_block']],
@@ -34,17 +37,12 @@ GRAMMAR = {
     'else_block': [['T_ELSE', 'T_LCB', 'block', 'T_RCB'], ['E']],
     'for_block': [['T_FOR', 'T_LP', 'for_stmt', 'T_RP', 'T_LCB', 'block', 'T_RCB']],
     'for_stmt': [['for_init', 'T_SEMICOLON', 'for_cond', 'T_SEMICOLON', 'for_step']],
-    'for_init': [['declare'], ['assign_expr'], ['E']],
+    'for_init': [['type', 'id_name', 'assign_expr'], ['id_name', 'assign_expr'], ['E']],
     'for_cond': [['comp_expr'], ['E']],
-    'for_step': [['assign_expr'], ['E']],
-    'comp_expr': [['logic_term', "comp_expr'"]],
-    "comp_expr'": [['comp_bin_op', 'logic_term', "comp_expr'"], ['E']],
-    'logic_term': [['logic_fact', "logic_term'"]],
-    "logic_term'": [['logic_bin_op', 'logic_fact', "logic_term'"], ['E']],
-    'logic_fact': [['T_LP', 'comp_expr', 'T_RP'], ['un_expr']],
+    'for_step': [['id_name', 'assign_expr'], ['E']],
+    'comp_expr': [['expr', 'comp_bin_op', 'expr'], ['expr']],
     'comp_bin_op': [['T_EQUALS'], ['T_NOT_EQUALS'], ['T_GT'], ['T_LT'], ['T_GE'], ['T_LE']],
-    'logic_bin_op': [['T_AND'], ['T_OR']],
-    'func': [['type', 'T_ID', 'T_LP', 'argument_list', 'T_RP', 'T_LCB', 'block', 'T_RCB']],
+    'func': [['T_LP', 'argument_list', 'T_RP', 'T_LCB', 'block', 'T_RCB']],
     'argument_list': [["argument", "argument_list'"], ['E']],
     "argument_list'": [["T_COMMA", "argument", "argument_list'"], ["E"]],
     'argument': [['type', 'id_name']],
@@ -61,6 +59,10 @@ with open('firsts.json') as f:
     FIRSTS = json.load(f)
 
 FOLLOWS = dict()
+
+TERMINALS = []
+
+NON_TERMINALS = []
 
 
 def make_grammar():
@@ -278,7 +280,54 @@ def create_follows_file():
         json.dump(FOLLOWS, file, indent=4)
 
 
+def compute_terminals():
+    global GRAMMAR, TERMINALS
+    for key in GRAMMAR.keys():
+        for rule in GRAMMAR[key]:
+            for sym in rule:
+                if sym.startswith('T_'):
+                    TERMINALS.append(sym)
+
+    # write them to a file
+    with open('terminals.json', 'w') as file:
+        json.dump(TERMINALS, file, indent=4)
+
+
+def compute_non_terminals():
+    global GRAMMAR, NON_TERMINALS
+    for key in GRAMMAR.keys():
+        NON_TERMINALS.append(key)
+
+    # write them to a file
+    with open('non_terminals.json', 'w') as file:
+        json.dump(NON_TERMINALS, file, indent=4)
+
+
+def create_parse_table():
+    global FIRSTS, FOLLOWS, GRAMMAR
+    parse_table = dict()
+    for NT in NON_TERMINALS:
+        for rule in GRAMMAR[NT]:
+            if rule[0] == 'E':
+                for term in FOLLOWS[NT]:
+                    parse_table[(NT, term)] = rule
+            elif rule[0].startswith('T_'):
+                parse_table[(NT, rule[0])] = rule
+            else:
+                for term in FIRSTS[rule[0]]:
+                    parse_table[(NT, term)] = rule
+                if 'E' in FIRSTS[rule[0]]:
+                    for term in FOLLOWS[NT]:
+                        parse_table[(NT, term)] = rule
+
+    with open('parse_table.json', 'w') as file:
+        json.dump(parse_table, file, indent=4)
+
+
 if __name__ == '__main__':
+    # compute_terminals()
+    # compute_non_terminals()
+
     # create_lf_file()
 
     # create_firsts_file()

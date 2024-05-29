@@ -5,25 +5,35 @@
             "program"
         ],
         [
-            "func",
+            "declaration",
             "program"
         ],
         [
             "E"
         ]
     ],
+    "declaration": [
+        [
+            "type",
+            "T_ID",
+            "dec'"
+        ]
+    ],
+    "dec'": [
+        [
+            "func"
+        ],
+        [
+            "id_name'",
+            "assign_expr",
+            "id_list'",
+            "T_SEMICOLON"
+        ]
+    ],
     "stmt": [
         [
-            "declare",
-            "T_SEMICOLON"
-        ],
-        [
-            "func_call",
-            "T_SEMICOLON"
-        ],
-        [
-            "assign_expr",
-            "T_SEMICOLON"
+            "T_ID",
+            "stmt'"
         ],
         [
             "return_stmt",
@@ -41,10 +51,15 @@
             "block_expr"
         ]
     ],
-    "declare": [
+    "stmt'": [
         [
-            "type",
-            "id_list"
+            "func_call",
+            "T_SEMICOLON"
+        ],
+        [
+            "id_name'",
+            "assign_expr",
+            "T_SEMICOLON"
         ]
     ],
     "type": [
@@ -95,7 +110,13 @@
     ],
     "id_list''": [
         [
-            "id_name"
+            "id_name",
+            "id_list'''"
+        ]
+    ],
+    "id_list'''": [
+        [
+            "E"
         ],
         [
             "assign_expr"
@@ -103,7 +124,6 @@
     ],
     "func_call": [
         [
-            "T_ID",
             "T_LP",
             "par_list",
             "T_RP"
@@ -128,32 +148,23 @@
             "E"
         ]
     ],
-    "expr": [
-        [
-            "calc_expr"
-        ],
-        [
-            "comp_expr"
-        ]
-    ],
     "assign_expr": [
         [
-            "id_name",
             "T_ASSIGN",
             "expr"
         ]
     ],
-    "calc_expr": [
+    "expr": [
         [
             "term",
-            "calc_expr'"
+            "expr'"
         ]
     ],
-    "calc_expr'": [
+    "expr'": [
         [
             "low_bin_op",
             "term",
-            "calc_expr'"
+            "expr'"
         ],
         [
             "E"
@@ -178,7 +189,7 @@
     "fact": [
         [
             "T_LP",
-            "calc_expr",
+            "expr",
             "T_RP"
         ],
         [
@@ -196,16 +207,22 @@
     ],
     "value": [
         [
-            "id_name"
+            "T_ID",
+            "value'"
         ],
         [
             "imm"
         ],
         [
-            "func_call"
+            "logic_imm"
+        ]
+    ],
+    "value'": [
+        [
+            "id_name'"
         ],
         [
-            "logic_imm"
+            "func_call"
         ]
     ],
     "imm": [
@@ -236,6 +253,12 @@
         ],
         [
             "T_MINUS"
+        ],
+        [
+            "T_OR"
+        ],
+        [
+            "T_AND"
         ]
     ],
     "high_bin_op": [
@@ -330,9 +353,12 @@
     ],
     "for_init": [
         [
-            "declare"
+            "type",
+            "id_name",
+            "assign_expr"
         ],
         [
+            "id_name",
             "assign_expr"
         ],
         [
@@ -349,6 +375,7 @@
     ],
     "for_step": [
         [
+            "id_name",
             "assign_expr"
         ],
         [
@@ -357,44 +384,17 @@
     ],
     "comp_expr": [
         [
-            "logic_term",
+            "expr",
             "comp_expr'"
         ]
     ],
     "comp_expr'": [
         [
             "comp_bin_op",
-            "logic_term",
-            "comp_expr'"
+            "expr"
         ],
         [
             "E"
-        ]
-    ],
-    "logic_term": [
-        [
-            "logic_fact",
-            "logic_term'"
-        ]
-    ],
-    "logic_term'": [
-        [
-            "logic_bin_op",
-            "logic_fact",
-            "logic_term'"
-        ],
-        [
-            "E"
-        ]
-    ],
-    "logic_fact": [
-        [
-            "T_LP",
-            "comp_expr",
-            "T_RP"
-        ],
-        [
-            "un_expr"
         ]
     ],
     "comp_bin_op": [
@@ -417,18 +417,8 @@
             "T_LE"
         ]
     ],
-    "logic_bin_op": [
-        [
-            "T_AND"
-        ],
-        [
-            "T_OR"
-        ]
-    ],
     "func": [
         [
-            "type",
-            "T_ID",
             "T_LP",
             "argument_list",
             "T_RP",
