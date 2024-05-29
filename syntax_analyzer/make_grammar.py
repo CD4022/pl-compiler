@@ -58,11 +58,14 @@ with open('lf.json') as f:
 with open('firsts.json') as f:
     FIRSTS = json.load(f)
 
-FOLLOWS = dict()
+with open('follows.json') as f:
+    FOLLOWS = json.load(f)
 
-TERMINALS = []
+with open('terminals.json') as f:
+    TERMINALS = json.load(f)
 
-NON_TERMINALS = []
+with open('non_terminals.json') as f:
+    NON_TERMINALS = json.load(f)
 
 
 def make_grammar():
@@ -303,25 +306,84 @@ def compute_non_terminals():
         json.dump(NON_TERMINALS, file, indent=4)
 
 
+def rule_firsts(rule):
+    firsts = set()
+    for sym in rule:
+        if sym in TERMINALS:
+            firsts.add(sym)
+            if 'E' in firsts:
+                firsts.remove('E')
+            break
+        else:
+            firsts = firsts.union(FIRSTS[sym])
+            if 'E' not in FIRSTS[sym]:
+                if 'E' in firsts:
+                    firsts.remove('E')
+                break
+    else:
+        firsts.add('E')
+
+    return firsts
+
+
 def create_parse_table():
     global FIRSTS, FOLLOWS, GRAMMAR
     parse_table = dict()
     for NT in NON_TERMINALS:
         for rule in GRAMMAR[NT]:
-            if rule[0] == 'E':
-                for term in FOLLOWS[NT]:
-                    parse_table[(NT, term)] = rule
-            elif rule[0].startswith('T_'):
-                parse_table[(NT, rule[0])] = rule
+            if rule[0] in TERMINALS:
+                if NT not in parse_table:
+                    parse_table[NT] = dict()
+                parse_table[NT][rule[0]] = rule
             else:
-                for term in FIRSTS[rule[0]]:
-                    parse_table[(NT, term)] = rule
-                if 'E' in FIRSTS[rule[0]]:
+                rf = rule_firsts(rule)
+                for term in rf:
+                    if term != 'E':
+                        if NT not in parse_table:
+                            parse_table[NT] = dict()
+                        parse_table[NT][term] = rule
+                if 'E' in rf:
                     for term in FOLLOWS[NT]:
-                        parse_table[(NT, term)] = rule
+                        if NT not in parse_table:
+                            parse_table[NT] = dict()
+                        parse_table[NT][term] = rule
+                else:
+                    nt_follow = set(FOLLOWS[NT]) - set(FIRSTS[NT])
+                    for term in nt_follow:
+                        if NT not in parse_table:
+                            parse_table[NT] = dict()
+                        parse_table[NT][term] = 'synch'
 
     with open('parse_table.json', 'w') as file:
         json.dump(parse_table, file, indent=4)
+
+
+def represent_grammar():
+    global GRAMMAR
+    for key in GRAMMAR.keys():
+        print(key, '->', end=' ')
+        flag = False
+        for rule in GRAMMAR[key]:
+            if flag:
+                print('|', end=' ')
+            flag = True
+            for sym in rule:
+                print(sym, end=' ')
+
+        print()
+
+
+def check_parse_table():
+    with open('parse_table.json') as file:
+        parse_table = json.load(file)
+
+    for NT in NON_TERMINALS:
+        for f in FIRSTS[NT]:
+            if parse_table[NT][f] is None:
+                print(NT, f)
+                return False
+
+    return True
 
 
 if __name__ == '__main__':
@@ -332,7 +394,13 @@ if __name__ == '__main__':
 
     # create_firsts_file()
 
-    create_follows_file()
+    # create_follows_file()
+
+    create_parse_table()
+
+    print(check_parse_table())
+
+    # represent_grammar()
 
 
 
