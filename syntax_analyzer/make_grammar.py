@@ -4,8 +4,8 @@ GRAMMAR = {
     'program': [['stmt', 'program'], ['declaration', 'program'], ['E']],
     'declaration': [['type', 'T_ID', "dec'"]],
     "dec'": [['func'], ["id_name'", "assign_expr", "id_list'", 'T_SEMICOLON']],
-    'stmt': [['T_ID', "stmt'"], ['return_stmt', 'T_SEMICOLON'], ['T_CONTINUE', 'T_SEMICOLON'],
-             ['T_BREAK', 'T_SEMICOLON'], ['block_expr']],
+    'stmt': [['T_ID', "stmt'"], ['T_PRINT', "func_call", 'T_SEMICOLON'], ['return_stmt', 'T_SEMICOLON'],
+             ['T_CONTINUE', 'T_SEMICOLON'], ['T_BREAK', 'T_SEMICOLON'], ['block_expr']],
     "stmt'": [['func_call', 'T_SEMICOLON'], ["id_name'", 'assign_expr', 'T_SEMICOLON']],
     'type': [['T_INT'], ['T_CHAR'], ['T_BOOL'], ['T_VOID']],
     'id_name': [['T_ID', "id_name'"]],
@@ -173,9 +173,6 @@ def first(rule):
                 # lastly if eplison still persists keep it in result of first
                 f_res.append('E')
                 return f_res
-
-
-# FOLLOW_STACK = []
 
 
 def follow(NT):
@@ -349,10 +346,17 @@ def create_parse_table():
                         parse_table[NT][term] = rule
                 else:
                     nt_follow = set(FOLLOWS[NT]) - set(FIRSTS[NT])
-                    for term in nt_follow:
-                        if NT not in parse_table:
-                            parse_table[NT] = dict()
-                        parse_table[NT][term] = 'synch'
+                    if 'E' not in FIRSTS[NT]:
+                        for term in nt_follow:
+                            if NT not in parse_table:
+                                parse_table[NT] = dict()
+                            parse_table[NT][term] = 'synch'
+
+        if 'E' in FIRSTS[NT]:
+            for term in FOLLOWS[NT]:
+                if NT not in parse_table:
+                    parse_table[NT] = dict()
+                parse_table[NT][term] = ['E']
 
     with open('parse_table.json', 'w') as file:
         json.dump(parse_table, file, indent=4)
@@ -397,7 +401,6 @@ if __name__ == '__main__':
     # create_follows_file()
 
     create_parse_table()
-
     print(check_parse_table())
 
     # represent_grammar()

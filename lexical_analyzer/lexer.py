@@ -1,5 +1,5 @@
 from sys import argv
-from constants import *
+from lexical_analyzer.constants import *
 
 
 class Token:
@@ -10,8 +10,11 @@ class Token:
         self.column = column + 1
         self.file_index = file_index + column
 
+    # def __repr__(self):
+    #     return f'{self.lexeme}\t:\t{self.token_type}\trow:{self.row}\tcolumn:{self.column}\tfile index:{self.file_index}'
+
     def __str__(self):
-        return f'{self.lexeme}\t:\t{self.token_type}\trow:{self.row}\tcolumn:{self.column}\tfile index:{self.file_index}'
+        return self.lexeme
 
 
 class Error:
@@ -90,6 +93,12 @@ def keyword(line, col, row, file_index):
                 case 'true':
                     if line[col + 4] not in ID_CHARS:
                         return Token('true', row, col, 'TRUE', file_index), col + 4
+
+        case 'v':
+            match line[col: col + 4]:
+                case 'void':
+                    if line[col + 4] not in ID_CHARS:
+                        return Token('void', row, col, 'VOID', file_index), col + 4
 
     return None, col
 
@@ -319,21 +328,31 @@ def analyze_file(file_path):
     return tokens
 
 
-def main():
-    file_path = argv[1]
+def lex(file_path):
     if not file_path:
         print('Please provide a file path')
         return
     tokens = analyze_file(file_path)
     err_count = 0
+    errors = []
     for token in tokens:
         if isinstance(token, Error):
             err_count += 1
-            print(token)
+            errors.append(token)
 
-    if err_count == 0:
+    return errors, tokens
+
+
+def main():
+    file_path = argv[1]
+    errors, tokens = lex(file_path)
+    if len(errors) > 0:
+        for error in errors:
+            print(error)
+    else:
         for token in tokens:
             print(token)
+
 
 
 if __name__ == '__main__':

@@ -36,6 +36,11 @@
             "stmt'"
         ],
         [
+            "T_PRINT",
+            "func_call",
+            "T_SEMICOLON"
+        ],
+        [
             "return_stmt",
             "T_SEMICOLON"
         ],

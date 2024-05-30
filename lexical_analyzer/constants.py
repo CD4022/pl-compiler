@@ -1,4 +1,4 @@
-KEY_WORDS = ['bool', 'break', 'char', 'continue', 'else', 'false', 'for', 'if', 'int', 'print', 'return', 'true']
+KEY_WORDS = ['bool', 'break', 'char', 'continue', 'else', 'false', 'for', 'if', 'int', 'print', 'return', 'true', 'void']
 KEY_WORDS.sort()
 
 # print(KEY_WORDS)
