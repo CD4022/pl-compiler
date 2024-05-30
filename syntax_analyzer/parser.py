@@ -6,13 +6,18 @@ import json
 from lexical_analyzer import lexer
 
 
-class Tree:
-    def __init__(self, value):
+class Node:
+    def __init__(self, value, parent=None):
         self.value = value
         self.children = []
+        self.parent = parent
+        self.parent.add_child(self) if parent else None
 
     def add_child(self, child):
         self.children.append(child)
+
+    def set_parent(self, parent):
+        self.parent = parent
 
     def extend_children(self, children):
         self.children.extend(children)
@@ -20,19 +25,19 @@ class Tree:
     def last_child(self):
         return self.children[-1]
 
-    def __str__(self):
-        tree = f'{self.value}'
+    def print_tree(self, level=0):
+        print('\t' * level, self.value)
         for child in self.children:
-            tree += f'\n{" " * 4}{child}'
+            child.print_tree(level + 1)
 
 
 def parse(tokens, parse_table):
-    tree = Tree('program')
     stack = deque()
+    track_back_lst = [1]
     stack.append('$')
     stack.append('program')
-
-    cur_tree = tree
+    root = None
+    curr_node = None
     i = 0
     while i < len(tokens):
         if tokens[i].lexeme in lexer.WHITESPACE.keys() or tokens[i].token_type == 'COMMENT':
@@ -40,26 +45,36 @@ def parse(tokens, parse_table):
             continue
 
         current = stack.pop()
-        while current == 'E':
-            current = stack.pop()
+        curr_node = Node(current, curr_node)
+        if track_back_lst[-1] == 0:
+            curr_node = curr_node.parent
+            track_back_lst.pop()
+
+        track_back_lst[-1] -= 1
+        if root is None:
+            root = curr_node
+
+        if current == 'E':
+            curr_node = curr_node.parent
+            continue
 
         if current.startswith('T_'):
             if current == f'T_{tokens[i].token_type}':
-                cur_tree.add_child(f'{current} {tokens[i].lexeme}')
+                curr_node.add_child(Node(f"{tokens[i].lexeme}"))
+                curr_node = curr_node.parent
                 i += 1
                 continue
             else:
                 print(f'Error: expected {current} got {tokens[i].token_type}')  # TODO: sync
                 return
 
-        cur_tree.add_child(Tree(current))
         applied_rule = parse_table[current][f"T_{tokens[i].token_type}"]
+        track_back_lst.append(len(applied_rule))
 
         for t in applied_rule[::-1]:
-            cur_tree = Tree(current)
             stack.append(t)
 
-        print("llll")
+    return root
 
 
 def main():
@@ -72,7 +87,9 @@ def main():
             print(error)
 
     else:
-        parse(tokens, parse_table)
+        root = parse(tokens, parse_table)
+        root.print_tree()
+
 
 
 
