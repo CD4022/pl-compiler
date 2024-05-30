@@ -30,6 +30,9 @@ class Node:
         for child in self.children:
             child.print_tree(level + 1)
 
+    def __repr__(self):
+        return self.value
+
 
 def parse(tokens, parse_table):
     stack = deque()
@@ -44,13 +47,15 @@ def parse(tokens, parse_table):
             i += 1
             continue
 
-        current = stack.pop()
-        curr_node = Node(current, curr_node)
         if track_back_lst[-1] == 0:
             curr_node = curr_node.parent
             track_back_lst.pop()
-
+            continue
         track_back_lst[-1] -= 1
+
+        current = stack.pop()
+        curr_node = Node(current, curr_node)
+
         if root is None:
             root = curr_node
 

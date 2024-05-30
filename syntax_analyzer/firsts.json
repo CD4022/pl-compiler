@@ -1,177 +1,184 @@
 {
     "program": [
         "T_FOR",
-        "T_BREAK",
-        "T_IF",
-        "T_CHAR",
-        "T_PRINT",
-        "T_ID",
-        "T_INT",
         "T_VOID",
         "T_CONTINUE",
         "T_BOOL",
+        "T_IF",
+        "E",
+        "T_INT",
+        "T_CHAR",
+        "T_BREAK",
         "T_RETURN",
-        "E"
+        "T_PRINT",
+        "T_ID"
     ],
     "declaration": [
         "T_VOID",
-        "T_BOOL",
+        "T_INT",
         "T_CHAR",
-        "T_INT"
+        "T_BOOL"
     ],
     "dec'": [
-        "T_LP",
         "T_ASSIGN",
-        "T_LSB"
+        "T_LSB",
+        "T_LP",
+        "T_SEMICOLON",
+        "T_COMMA"
+    ],
+    "dec''": [
+        "T_SEMICOLON",
+        "T_COMMA",
+        "T_ASSIGN"
     ],
     "stmt": [
         "T_FOR",
-        "T_BREAK",
-        "T_IF",
-        "T_PRINT",
-        "T_ID",
         "T_CONTINUE",
-        "T_RETURN"
+        "T_IF",
+        "T_BREAK",
+        "T_RETURN",
+        "T_PRINT",
+        "T_ID"
     ],
     "stmt'": [
+        "T_LSB",
         "T_LP",
-        "T_ASSIGN",
-        "T_LSB"
+        "T_ASSIGN"
     ],
     "type": [
         "T_VOID",
-        "T_BOOL",
+        "T_INT",
         "T_CHAR",
-        "T_INT"
+        "T_BOOL"
     ],
     "id_name": [
         "T_ID"
     ],
     "id_name'": [
-        "T_LSB",
-        "E"
+        "E",
+        "T_LSB"
     ],
     "id_list": [
         "T_ID"
     ],
     "id_list'": [
-        "T_COMMA",
-        "E"
+        "E",
+        "T_COMMA"
     ],
     "id_list''": [
         "T_ID"
     ],
     "id_list'''": [
-        "T_ASSIGN",
-        "E"
+        "E",
+        "T_ASSIGN"
     ],
     "func_call": [
         "T_LP"
     ],
     "par_list": [
-        "T_MINUS",
-        "T_DEC_VAL",
-        "T_ID",
-        "T_TRUE",
-        "T_STR_VAL",
-        "T_HEX_VAL",
-        "T_LP",
         "T_CHAR_VAL",
-        "T_NOT",
+        "T_DEC_VAL",
+        "T_HEX_VAL",
         "T_FALSE",
         "E",
-        "T_PLUS"
+        "T_PLUS",
+        "T_LP",
+        "T_STR_VAL",
+        "T_TRUE",
+        "T_MINUS",
+        "T_NOT",
+        "T_ID"
     ],
     "par_list'": [
-        "T_COMMA",
-        "E"
+        "E",
+        "T_COMMA"
     ],
     "assign_expr": [
         "T_ASSIGN"
     ],
     "expr": [
-        "T_MINUS",
-        "T_DEC_VAL",
-        "T_ID",
-        "T_TRUE",
-        "T_STR_VAL",
-        "T_HEX_VAL",
-        "T_LP",
         "T_CHAR_VAL",
-        "T_NOT",
+        "T_DEC_VAL",
+        "T_HEX_VAL",
         "T_FALSE",
-        "T_PLUS"
+        "T_PLUS",
+        "T_LP",
+        "T_STR_VAL",
+        "T_TRUE",
+        "T_MINUS",
+        "T_NOT",
+        "T_ID"
     ],
     "expr'": [
-        "T_MINUS",
-        "T_AND",
         "T_OR",
+        "T_AND",
         "E",
+        "T_MINUS",
         "T_PLUS"
     ],
     "term": [
-        "T_MINUS",
-        "T_DEC_VAL",
-        "T_ID",
-        "T_TRUE",
-        "T_STR_VAL",
-        "T_HEX_VAL",
-        "T_LP",
         "T_CHAR_VAL",
-        "T_NOT",
+        "T_DEC_VAL",
+        "T_HEX_VAL",
         "T_FALSE",
-        "T_PLUS"
+        "T_PLUS",
+        "T_LP",
+        "T_STR_VAL",
+        "T_TRUE",
+        "T_MINUS",
+        "T_NOT",
+        "T_ID"
     ],
     "term'": [
-        "T_DIV",
         "E",
-        "T_MOD",
-        "T_MULT"
+        "T_DIV",
+        "T_MULT",
+        "T_MOD"
     ],
     "fact": [
-        "T_MINUS",
-        "T_DEC_VAL",
-        "T_ID",
-        "T_TRUE",
-        "T_STR_VAL",
-        "T_HEX_VAL",
-        "T_LP",
         "T_CHAR_VAL",
-        "T_NOT",
+        "T_DEC_VAL",
+        "T_HEX_VAL",
         "T_FALSE",
-        "T_PLUS"
+        "T_PLUS",
+        "T_LP",
+        "T_STR_VAL",
+        "T_TRUE",
+        "T_MINUS",
+        "T_NOT",
+        "T_ID"
     ],
     "un_expr": [
-        "T_MINUS",
-        "T_DEC_VAL",
-        "T_ID",
-        "T_TRUE",
-        "T_STR_VAL",
-        "T_HEX_VAL",
         "T_CHAR_VAL",
-        "T_NOT",
+        "T_DEC_VAL",
+        "T_HEX_VAL",
         "T_FALSE",
-        "T_PLUS"
+        "T_PLUS",
+        "T_STR_VAL",
+        "T_TRUE",
+        "T_MINUS",
+        "T_NOT",
+        "T_ID"
     ],
     "value": [
+        "T_CHAR_VAL",
         "T_DEC_VAL",
-        "T_ID",
+        "T_HEX_VAL",
+        "T_FALSE",
+        "T_STR_VAL",
         "T_TRUE",
+        "T_ID"
+    ],
+    "value'": [
+        "E",
+        "T_LSB",
+        "T_LP"
+    ],
+    "imm": [
         "T_STR_VAL",
         "T_HEX_VAL",
         "T_CHAR_VAL",
-        "T_FALSE"
-    ],
-    "value'": [
-        "T_LP",
-        "T_LSB",
-        "E"
-    ],
-    "imm": [
-        "T_HEX_VAL",
-        "T_DEC_VAL",
-        "T_STR_VAL",
-        "T_CHAR_VAL"
+        "T_DEC_VAL"
     ],
     "logic_imm": [
         "T_TRUE",
@@ -185,8 +192,8 @@
     ],
     "high_bin_op": [
         "T_DIV",
-        "T_MOD",
-        "T_MULT"
+        "T_MULT",
+        "T_MOD"
     ],
     "un_op": [
         "T_NOT",
@@ -201,125 +208,128 @@
         "T_IF"
     ],
     "else_if_blocks": [
-        "T_ELSE",
-        "E"
+        "E",
+        "T_ELSE"
     ],
     "else_block": [
-        "T_ELSE",
-        "E"
+        "E",
+        "T_ELSE"
     ],
     "for_block": [
         "T_FOR"
     ],
     "for_stmt": [
-        "T_CHAR",
-        "T_ID",
-        "T_INT",
         "T_VOID",
         "T_BOOL",
-        "T_SEMICOLON"
+        "T_INT",
+        "T_CHAR",
+        "T_SEMICOLON",
+        "T_ID"
     ],
     "for_init": [
-        "T_CHAR",
-        "T_ID",
-        "T_INT",
         "T_VOID",
         "T_BOOL",
-        "E"
+        "E",
+        "T_INT",
+        "T_CHAR",
+        "T_ID"
     ],
     "for_cond": [
-        "T_MINUS",
-        "T_DEC_VAL",
-        "T_ID",
-        "T_TRUE",
-        "T_STR_VAL",
-        "T_HEX_VAL",
-        "T_LP",
         "T_CHAR_VAL",
-        "T_NOT",
+        "T_DEC_VAL",
+        "T_HEX_VAL",
         "T_FALSE",
         "E",
-        "T_PLUS"
+        "T_PLUS",
+        "T_LP",
+        "T_STR_VAL",
+        "T_TRUE",
+        "T_MINUS",
+        "T_NOT",
+        "T_ID"
     ],
     "for_step": [
-        "T_ID",
-        "E"
+        "E",
+        "T_ID"
     ],
     "comp_expr": [
-        "T_MINUS",
-        "T_DEC_VAL",
-        "T_ID",
-        "T_TRUE",
-        "T_STR_VAL",
-        "T_HEX_VAL",
-        "T_LP",
         "T_CHAR_VAL",
-        "T_NOT",
+        "T_DEC_VAL",
+        "T_HEX_VAL",
         "T_FALSE",
-        "T_PLUS"
+        "T_PLUS",
+        "T_LP",
+        "T_STR_VAL",
+        "T_TRUE",
+        "T_MINUS",
+        "T_NOT",
+        "T_ID"
     ],
     "comp_expr'": [
+        "T_EQUALS",
         "T_LT",
-        "T_GT",
-        "E",
         "T_NOT_EQUALS",
         "T_GE",
         "T_LE",
-        "T_EQUALS"
+        "T_GT"
     ],
     "comp_bin_op": [
+        "T_EQUALS",
         "T_LT",
-        "T_GT",
         "T_NOT_EQUALS",
         "T_GE",
         "T_LE",
-        "T_EQUALS"
+        "T_GT"
     ],
     "func": [
         "T_LP"
     ],
     "argument_list": [
-        "T_CHAR",
-        "T_INT",
         "T_VOID",
         "T_BOOL",
-        "E"
+        "E",
+        "T_INT",
+        "T_CHAR"
     ],
     "argument_list'": [
-        "T_COMMA",
-        "E"
+        "E",
+        "T_COMMA"
     ],
     "argument": [
         "T_VOID",
-        "T_BOOL",
+        "T_INT",
         "T_CHAR",
-        "T_INT"
+        "T_BOOL"
     ],
     "block": [
         "T_FOR",
-        "T_BREAK",
-        "T_IF",
-        "T_PRINT",
-        "T_ID",
+        "T_VOID",
         "T_CONTINUE",
+        "T_BOOL",
+        "T_IF",
+        "E",
+        "T_INT",
+        "T_CHAR",
+        "T_BREAK",
         "T_RETURN",
-        "E"
+        "T_PRINT",
+        "T_ID"
     ],
     "return_stmt": [
         "T_RETURN"
     ],
     "return_val": [
-        "T_MINUS",
-        "T_DEC_VAL",
-        "T_ID",
-        "T_TRUE",
-        "T_STR_VAL",
-        "T_HEX_VAL",
-        "T_LP",
         "T_CHAR_VAL",
-        "T_NOT",
+        "T_DEC_VAL",
+        "T_HEX_VAL",
         "T_FALSE",
         "E",
-        "T_PLUS"
+        "T_PLUS",
+        "T_LP",
+        "T_STR_VAL",
+        "T_TRUE",
+        "T_MINUS",
+        "T_NOT",
+        "T_ID"
     ]
 }

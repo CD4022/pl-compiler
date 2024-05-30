@@ -25,7 +25,16 @@
         ],
         [
             "id_name'",
+            "dec''"
+        ]
+    ],
+    "dec''": [
+        [
             "assign_expr",
+            "id_list'",
+            "T_SEMICOLON"
+        ],
+        [
             "id_list'",
             "T_SEMICOLON"
         ]
@@ -398,9 +407,7 @@
             "comp_bin_op",
             "expr"
         ],
-        [
-            "E"
-        ]
+        []
     ],
     "comp_bin_op": [
         [
@@ -460,6 +467,10 @@
     "block": [
         [
             "stmt",
+            "block"
+        ],
+        [
+            "declaration",
             "block"
         ],
         [

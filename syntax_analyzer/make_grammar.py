@@ -3,7 +3,7 @@ import json
 GRAMMAR = {
     'program': [['stmt', 'program'], ['declaration', 'program'], ['E']],
     'declaration': [['type', 'T_ID', "dec'"]],
-    "dec'": [['func'], ["id_name'", "assign_expr", "id_list'", 'T_SEMICOLON']],
+    "dec'": [['func'], ["id_name'", "assign_expr", "id_list'", 'T_SEMICOLON'], ["id_name'", "id_list'", 'T_SEMICOLON']],
     'stmt': [['T_ID', "stmt'"], ['T_PRINT', "func_call", 'T_SEMICOLON'], ['return_stmt', 'T_SEMICOLON'],
              ['T_CONTINUE', 'T_SEMICOLON'], ['T_BREAK', 'T_SEMICOLON'], ['block_expr']],
     "stmt'": [['func_call', 'T_SEMICOLON'], ["id_name'", 'assign_expr', 'T_SEMICOLON']],
@@ -46,27 +46,40 @@ GRAMMAR = {
     'argument_list': [["argument", "argument_list'"], ['E']],
     "argument_list'": [["T_COMMA", "argument", "argument_list'"], ["E"]],
     'argument': [['type', 'id_name']],
-    'block': [['stmt', 'block'], ['E']],
+    'block': [['stmt', 'block'], ['declaration', 'block'], ['E']],
     'return_stmt': [['T_RETURN', 'return_val']],
     'return_val': [['expr'], ['E']]
 }
 
+try:
+    with open('lf.json') as f:
+        LF_GRAMMAR = json.load(f)
+except FileNotFoundError:
+    LF_GRAMMAR = dict
 
-with open('lf.json') as f:
-    LF_GRAMMAR = json.load(f)
+try:
+    with open('firsts.json') as f:
+        FIRSTS = json.load(f)
+except FileNotFoundError:
+    FIRSTS = dict()
 
-with open('firsts.json') as f:
-    FIRSTS = json.load(f)
+try:
+    with open('follows.json') as f:
+        FOLLOWS = json.load(f)
+except FileNotFoundError:
+    FOLLOWS = dict()
 
-with open('follows.json') as f:
-    FOLLOWS = json.load(f)
+try:
+    with open('terminals.json') as f:
+        TERMINALS = json.load(f)
+except FileNotFoundError:
+    TERMINALS = []
 
-with open('terminals.json') as f:
-    TERMINALS = json.load(f)
-
-with open('non_terminals.json') as f:
-    NON_TERMINALS = json.load(f)
-
+try:
+    with open('non_terminals.json') as f:
+        NON_TERMINALS = json.load(f)
+except FileNotFoundError:
+    NON_TERMINALS = []
 
 def make_grammar():
     return GRAMMAR
@@ -288,6 +301,8 @@ def compute_terminals():
                 if sym.startswith('T_'):
                     TERMINALS.append(sym)
 
+    TERMINALS.append('E')
+
     # write them to a file
     with open('terminals.json', 'w') as file:
         json.dump(TERMINALS, file, indent=4)
@@ -391,14 +406,14 @@ def check_parse_table():
 
 
 if __name__ == '__main__':
-    # compute_terminals()
-    # compute_non_terminals()
+    compute_terminals()
+    compute_non_terminals()
 
-    # create_lf_file()
+    create_lf_file()
 
-    # create_firsts_file()
+    create_firsts_file()
 
-    # create_follows_file()
+    create_follows_file()
 
     create_parse_table()
     print(check_parse_table())
