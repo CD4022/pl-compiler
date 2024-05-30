@@ -325,6 +325,9 @@ def analyze_file(file_path):
 
             file_index += col
 
+    # add $ token (end of file)
+    tokens.append(Token('$', row, col, 'EOF', file_index))
+
     return tokens
 
 
@@ -352,7 +355,6 @@ def main():
     else:
         for token in tokens:
             print(token)
-
 
 
 if __name__ == '__main__':

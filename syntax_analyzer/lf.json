@@ -99,7 +99,7 @@
     "id_name'": [
         [
             "T_LSB",
-            "calc_expr",
+            "expr",
             "T_RSB"
         ],
         [

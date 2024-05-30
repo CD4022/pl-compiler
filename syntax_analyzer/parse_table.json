@@ -1,18 +1,6 @@
 {
     "program": {
-        "T_FOR": [
-            "stmt",
-            "program"
-        ],
-        "T_CONTINUE": [
-            "stmt",
-            "program"
-        ],
-        "T_IF": [
-            "stmt",
-            "program"
-        ],
-        "T_BREAK": [
+        "T_ID": [
             "stmt",
             "program"
         ],
@@ -20,12 +8,28 @@
             "stmt",
             "program"
         ],
+        "T_FOR": [
+            "stmt",
+            "program"
+        ],
+        "T_IF": [
+            "stmt",
+            "program"
+        ],
         "T_PRINT": [
             "stmt",
             "program"
         ],
-        "T_ID": [
+        "T_CONTINUE": [
             "stmt",
+            "program"
+        ],
+        "T_BREAK": [
+            "stmt",
+            "program"
+        ],
+        "T_CHAR": [
+            "declaration",
             "program"
         ],
         "T_VOID": [
@@ -33,10 +37,6 @@
             "program"
         ],
         "T_INT": [
-            "declaration",
-            "program"
-        ],
-        "T_CHAR": [
             "declaration",
             "program"
         ],
@@ -52,6 +52,11 @@
         ]
     },
     "declaration": {
+        "T_CHAR": [
+            "type",
+            "T_ID",
+            "dec'"
+        ],
         "T_VOID": [
             "type",
             "T_ID",
@@ -62,51 +67,46 @@
             "T_ID",
             "dec'"
         ],
-        "T_CHAR": [
-            "type",
-            "T_ID",
-            "dec'"
-        ],
         "T_BOOL": [
             "type",
             "T_ID",
             "dec'"
         ],
-        "T_RCB": "synch",
-        "T_FOR": "synch",
-        "T_CONTINUE": "synch",
-        "T_IF": "synch",
-        "T_BREAK": "synch",
-        "$": "synch",
+        "T_ID": "synch",
         "T_RETURN": "synch",
+        "T_FOR": "synch",
+        "T_RCB": "synch",
+        "T_IF": "synch",
         "T_PRINT": "synch",
-        "T_ID": "synch"
+        "T_CONTINUE": "synch",
+        "$": "synch",
+        "T_BREAK": "synch"
     },
     "dec'": {
         "T_LP": [
             "func"
         ],
-        "T_RCB": "synch",
-        "T_FOR": "synch",
-        "T_VOID": "synch",
-        "T_CONTINUE": "synch",
-        "T_BOOL": "synch",
-        "T_IF": "synch",
-        "T_INT": "synch",
-        "T_CHAR": "synch",
-        "T_BREAK": "synch",
-        "$": "synch",
-        "T_RETURN": "synch",
-        "T_PRINT": "synch",
         "T_ID": "synch",
-        "T_LSB": [
-            "id_name'",
-            "id_list'",
-            "T_SEMICOLON"
-        ],
+        "T_RETURN": "synch",
+        "T_CHAR": "synch",
+        "T_FOR": "synch",
+        "T_INT": "synch",
+        "T_VOID": "synch",
+        "T_RCB": "synch",
+        "T_IF": "synch",
+        "T_BOOL": "synch",
+        "T_CONTINUE": "synch",
+        "$": "synch",
+        "T_BREAK": "synch",
+        "T_PRINT": "synch",
         "T_ASSIGN": [
             "id_name'",
             "assign_expr",
+            "id_list'",
+            "T_SEMICOLON"
+        ],
+        "T_LSB": [
+            "id_name'",
             "id_list'",
             "T_SEMICOLON"
         ],
@@ -135,9 +135,9 @@
             "return_stmt",
             "T_SEMICOLON"
         ],
+        "T_CHAR": "synch",
         "T_VOID": "synch",
         "T_INT": "synch",
-        "T_CHAR": "synch",
         "T_BOOL": "synch",
         "T_CONTINUE": [
             "T_CONTINUE",
@@ -159,23 +159,23 @@
             "func_call",
             "T_SEMICOLON"
         ],
-        "T_FOR": "synch",
-        "T_VOID": "synch",
-        "T_CONTINUE": "synch",
-        "T_BOOL": "synch",
-        "T_IF": "synch",
-        "T_INT": "synch",
-        "T_CHAR": "synch",
-        "T_BREAK": "synch",
-        "T_RETURN": "synch",
-        "T_PRINT": "synch",
         "T_ID": "synch",
-        "T_LSB": [
+        "T_RETURN": "synch",
+        "T_CHAR": "synch",
+        "T_FOR": "synch",
+        "T_INT": "synch",
+        "T_VOID": "synch",
+        "T_IF": "synch",
+        "T_BOOL": "synch",
+        "T_CONTINUE": "synch",
+        "T_BREAK": "synch",
+        "T_PRINT": "synch",
+        "T_ASSIGN": [
             "id_name'",
             "assign_expr",
             "T_SEMICOLON"
         ],
-        "T_ASSIGN": [
+        "T_LSB": [
             "id_name'",
             "assign_expr",
             "T_SEMICOLON"
@@ -204,25 +204,28 @@
     "id_name'": {
         "T_LSB": [
             "T_LSB",
-            "calc_expr",
+            "expr",
             "T_RSB"
         ],
         "E": [
             "E"
         ],
-        "T_EQUALS": [
+        "T_NOT_EQUALS": [
+            "E"
+        ],
+        "T_COMMA": [
             "E"
         ],
         "T_LE": [
             "E"
         ],
-        "T_LT": [
+        "T_EQUALS": [
             "E"
         ],
-        "T_OR": [
+        "T_GE": [
             "E"
         ],
-        "T_AND": [
+        "T_MINUS": [
             "E"
         ],
         "T_DIV": [
@@ -231,34 +234,34 @@
         "T_ASSIGN": [
             "E"
         ],
-        "T_NOT_EQUALS": [
-            "E"
-        ],
-        "T_MULT": [
-            "E"
-        ],
-        "T_GE": [
+        "T_OR": [
             "E"
         ],
         "T_SEMICOLON": [
             "E"
         ],
+        "T_PLUS": [
+            "E"
+        ],
         "T_MOD": [
             "E"
         ],
-        "T_RP": [
+        "T_LT": [
             "E"
         ],
-        "T_MINUS": [
+        "T_AND": [
             "E"
         ],
         "T_GT": [
             "E"
         ],
-        "T_PLUS": [
+        "T_MULT": [
             "E"
         ],
-        "T_COMMA": [
+        "T_RP": [
+            "E"
+        ],
+        "T_RSB": [
             "E"
         ]
     },
@@ -307,11 +310,35 @@
         ]
     },
     "par_list": {
-        "T_ID": [
+        "T_NOT": [
             "expr",
             "par_list'"
         ],
         "T_CHAR_VAL": [
+            "expr",
+            "par_list'"
+        ],
+        "T_STR_VAL": [
+            "expr",
+            "par_list'"
+        ],
+        "T_ID": [
+            "expr",
+            "par_list'"
+        ],
+        "T_LP": [
+            "expr",
+            "par_list'"
+        ],
+        "T_MINUS": [
+            "expr",
+            "par_list'"
+        ],
+        "T_FALSE": [
+            "expr",
+            "par_list'"
+        ],
+        "T_TRUE": [
             "expr",
             "par_list'"
         ],
@@ -323,31 +350,7 @@
             "expr",
             "par_list'"
         ],
-        "T_LP": [
-            "expr",
-            "par_list'"
-        ],
-        "T_STR_VAL": [
-            "expr",
-            "par_list'"
-        ],
-        "T_NOT": [
-            "expr",
-            "par_list'"
-        ],
-        "T_TRUE": [
-            "expr",
-            "par_list'"
-        ],
-        "T_MINUS": [
-            "expr",
-            "par_list'"
-        ],
         "T_PLUS": [
-            "expr",
-            "par_list'"
-        ],
-        "T_FALSE": [
             "expr",
             "par_list'"
         ],
@@ -378,11 +381,35 @@
         ]
     },
     "expr": {
-        "T_ID": [
+        "T_NOT": [
             "term",
             "expr'"
         ],
         "T_CHAR_VAL": [
+            "term",
+            "expr'"
+        ],
+        "T_STR_VAL": [
+            "term",
+            "expr'"
+        ],
+        "T_ID": [
+            "term",
+            "expr'"
+        ],
+        "T_LP": [
+            "term",
+            "expr'"
+        ],
+        "T_MINUS": [
+            "term",
+            "expr'"
+        ],
+        "T_FALSE": [
+            "term",
+            "expr'"
+        ],
+        "T_TRUE": [
             "term",
             "expr'"
         ],
@@ -394,56 +421,23 @@
             "term",
             "expr'"
         ],
-        "T_LP": [
-            "term",
-            "expr'"
-        ],
-        "T_STR_VAL": [
-            "term",
-            "expr'"
-        ],
-        "T_NOT": [
-            "term",
-            "expr'"
-        ],
-        "T_TRUE": [
-            "term",
-            "expr'"
-        ],
-        "T_MINUS": [
-            "term",
-            "expr'"
-        ],
         "T_PLUS": [
             "term",
             "expr'"
         ],
-        "T_FALSE": [
-            "term",
-            "expr'"
-        ],
-        "T_EQUALS": "synch",
-        "T_LT": "synch",
         "T_NOT_EQUALS": "synch",
+        "T_COMMA": "synch",
+        "T_LE": "synch",
+        "T_EQUALS": "synch",
         "T_GE": "synch",
         "T_SEMICOLON": "synch",
-        "T_RP": "synch",
-        "T_LE": "synch",
+        "T_LT": "synch",
         "T_GT": "synch",
-        "T_COMMA": "synch"
+        "T_RP": "synch",
+        "T_RSB": "synch"
     },
     "expr'": {
         "T_AND": [
-            "low_bin_op",
-            "term",
-            "expr'"
-        ],
-        "T_PLUS": [
-            "low_bin_op",
-            "term",
-            "expr'"
-        ],
-        "T_MINUS": [
             "low_bin_op",
             "term",
             "expr'"
@@ -453,16 +447,29 @@
             "term",
             "expr'"
         ],
+        "T_MINUS": [
+            "low_bin_op",
+            "term",
+            "expr'"
+        ],
+        "T_PLUS": [
+            "low_bin_op",
+            "term",
+            "expr'"
+        ],
         "E": [
             "E"
         ],
-        "T_EQUALS": [
-            "E"
-        ],
-        "T_LT": [
-            "E"
-        ],
         "T_NOT_EQUALS": [
+            "E"
+        ],
+        "T_COMMA": [
+            "E"
+        ],
+        "T_LE": [
+            "E"
+        ],
+        "T_EQUALS": [
             "E"
         ],
         "T_GE": [
@@ -471,25 +478,49 @@
         "T_SEMICOLON": [
             "E"
         ],
-        "T_RP": [
-            "E"
-        ],
-        "T_LE": [
+        "T_LT": [
             "E"
         ],
         "T_GT": [
             "E"
         ],
-        "T_COMMA": [
+        "T_RP": [
+            "E"
+        ],
+        "T_RSB": [
             "E"
         ]
     },
     "term": {
-        "T_ID": [
+        "T_NOT": [
             "fact",
             "term'"
         ],
         "T_CHAR_VAL": [
+            "fact",
+            "term'"
+        ],
+        "T_STR_VAL": [
+            "fact",
+            "term'"
+        ],
+        "T_ID": [
+            "fact",
+            "term'"
+        ],
+        "T_LP": [
+            "fact",
+            "term'"
+        ],
+        "T_MINUS": [
+            "fact",
+            "term'"
+        ],
+        "T_FALSE": [
+            "fact",
+            "term'"
+        ],
+        "T_TRUE": [
             "fact",
             "term'"
         ],
@@ -501,52 +532,24 @@
             "fact",
             "term'"
         ],
-        "T_LP": [
-            "fact",
-            "term'"
-        ],
-        "T_STR_VAL": [
-            "fact",
-            "term'"
-        ],
-        "T_NOT": [
-            "fact",
-            "term'"
-        ],
-        "T_TRUE": [
-            "fact",
-            "term'"
-        ],
-        "T_MINUS": [
-            "fact",
-            "term'"
-        ],
         "T_PLUS": [
             "fact",
             "term'"
         ],
-        "T_FALSE": [
-            "fact",
-            "term'"
-        ],
-        "T_EQUALS": "synch",
-        "T_LT": "synch",
-        "T_OR": "synch",
-        "T_AND": "synch",
         "T_NOT_EQUALS": "synch",
-        "T_GE": "synch",
-        "T_SEMICOLON": "synch",
-        "T_RP": "synch",
+        "T_COMMA": "synch",
         "T_LE": "synch",
+        "T_EQUALS": "synch",
+        "T_GE": "synch",
+        "T_OR": "synch",
+        "T_SEMICOLON": "synch",
+        "T_LT": "synch",
+        "T_AND": "synch",
         "T_GT": "synch",
-        "T_COMMA": "synch"
+        "T_RP": "synch",
+        "T_RSB": "synch"
     },
     "term'": {
-        "T_DIV": [
-            "high_bin_op",
-            "fact",
-            "term'"
-        ],
         "T_MULT": [
             "high_bin_op",
             "fact",
@@ -557,46 +560,54 @@
             "fact",
             "term'"
         ],
+        "T_DIV": [
+            "high_bin_op",
+            "fact",
+            "term'"
+        ],
         "E": [
-            "E"
-        ],
-        "T_EQUALS": [
-            "E"
-        ],
-        "T_LE": [
-            "E"
-        ],
-        "T_LT": [
-            "E"
-        ],
-        "T_OR": [
-            "E"
-        ],
-        "T_AND": [
             "E"
         ],
         "T_NOT_EQUALS": [
             "E"
         ],
+        "T_COMMA": [
+            "E"
+        ],
+        "T_LE": [
+            "E"
+        ],
+        "T_EQUALS": [
+            "E"
+        ],
         "T_GE": [
-            "E"
-        ],
-        "T_SEMICOLON": [
-            "E"
-        ],
-        "T_RP": [
             "E"
         ],
         "T_MINUS": [
             "E"
         ],
-        "T_GT": [
+        "T_OR": [
+            "E"
+        ],
+        "T_SEMICOLON": [
             "E"
         ],
         "T_PLUS": [
             "E"
         ],
-        "T_COMMA": [
+        "T_LT": [
+            "E"
+        ],
+        "T_AND": [
+            "E"
+        ],
+        "T_GT": [
+            "E"
+        ],
+        "T_RP": [
+            "E"
+        ],
+        "T_RSB": [
             "E"
         ]
     },
@@ -606,10 +617,25 @@
             "expr",
             "T_RP"
         ],
-        "T_ID": [
+        "T_NOT": [
             "un_expr"
         ],
         "T_CHAR_VAL": [
+            "un_expr"
+        ],
+        "T_STR_VAL": [
+            "un_expr"
+        ],
+        "T_ID": [
+            "un_expr"
+        ],
+        "T_MINUS": [
+            "un_expr"
+        ],
+        "T_FALSE": [
+            "un_expr"
+        ],
+        "T_TRUE": [
             "un_expr"
         ],
         "T_DEC_VAL": [
@@ -618,40 +644,30 @@
         "T_HEX_VAL": [
             "un_expr"
         ],
-        "T_STR_VAL": [
-            "un_expr"
-        ],
-        "T_NOT": [
-            "un_expr"
-        ],
-        "T_TRUE": [
-            "un_expr"
-        ],
-        "T_MINUS": [
-            "un_expr"
-        ],
         "T_PLUS": [
             "un_expr"
         ],
-        "T_FALSE": [
-            "un_expr"
-        ],
-        "T_EQUALS": "synch",
-        "T_LT": "synch",
-        "T_OR": "synch",
-        "T_AND": "synch",
-        "T_DIV": "synch",
         "T_NOT_EQUALS": "synch",
-        "T_MULT": "synch",
+        "T_COMMA": "synch",
+        "T_LE": "synch",
+        "T_EQUALS": "synch",
         "T_GE": "synch",
+        "T_DIV": "synch",
+        "T_OR": "synch",
         "T_SEMICOLON": "synch",
         "T_MOD": "synch",
-        "T_RP": "synch",
-        "T_LE": "synch",
+        "T_LT": "synch",
+        "T_AND": "synch",
         "T_GT": "synch",
-        "T_COMMA": "synch"
+        "T_MULT": "synch",
+        "T_RP": "synch",
+        "T_RSB": "synch"
     },
     "un_expr": {
+        "T_NOT": [
+            "un_op",
+            "value"
+        ],
         "T_PLUS": [
             "un_op",
             "value"
@@ -660,43 +676,40 @@
             "un_op",
             "value"
         ],
-        "T_NOT": [
-            "un_op",
-            "value"
-        ],
-        "T_EQUALS": "synch",
-        "T_LT": "synch",
-        "T_OR": "synch",
-        "T_AND": "synch",
-        "T_DIV": "synch",
         "T_NOT_EQUALS": "synch",
-        "T_MULT": "synch",
+        "T_COMMA": "synch",
+        "T_LE": "synch",
+        "T_EQUALS": "synch",
         "T_GE": "synch",
+        "T_DIV": "synch",
+        "T_OR": "synch",
         "T_SEMICOLON": "synch",
         "T_MOD": "synch",
-        "T_RP": "synch",
-        "T_LE": "synch",
+        "T_LT": "synch",
+        "T_AND": "synch",
         "T_GT": "synch",
-        "T_COMMA": "synch",
+        "T_MULT": "synch",
+        "T_RP": "synch",
+        "T_RSB": "synch",
         "T_ID": [
             "value"
         ],
         "T_CHAR_VAL": [
             "value"
         ],
-        "T_DEC_VAL": [
-            "value"
-        ],
-        "T_HEX_VAL": [
-            "value"
-        ],
         "T_STR_VAL": [
+            "value"
+        ],
+        "T_FALSE": [
             "value"
         ],
         "T_TRUE": [
             "value"
         ],
-        "T_FALSE": [
+        "T_DEC_VAL": [
+            "value"
+        ],
+        "T_HEX_VAL": [
             "value"
         ]
     },
@@ -705,34 +718,35 @@
             "T_ID",
             "func_call"
         ],
-        "T_STR_VAL": [
-            "imm"
-        ],
-        "T_HEX_VAL": [
-            "imm"
-        ],
         "T_CHAR_VAL": [
+            "imm"
+        ],
+        "T_STR_VAL": [
             "imm"
         ],
         "T_DEC_VAL": [
             "imm"
         ],
-        "T_EQUALS": "synch",
-        "T_LE": "synch",
-        "T_LT": "synch",
-        "T_OR": "synch",
-        "T_AND": "synch",
-        "T_DIV": "synch",
+        "T_HEX_VAL": [
+            "imm"
+        ],
         "T_NOT_EQUALS": "synch",
-        "T_MULT": "synch",
-        "T_GE": "synch",
-        "T_SEMICOLON": "synch",
-        "T_MOD": "synch",
-        "T_RP": "synch",
-        "T_MINUS": "synch",
-        "T_GT": "synch",
-        "T_PLUS": "synch",
         "T_COMMA": "synch",
+        "T_LE": "synch",
+        "T_EQUALS": "synch",
+        "T_GE": "synch",
+        "T_MINUS": "synch",
+        "T_DIV": "synch",
+        "T_OR": "synch",
+        "T_SEMICOLON": "synch",
+        "T_PLUS": "synch",
+        "T_MOD": "synch",
+        "T_LT": "synch",
+        "T_AND": "synch",
+        "T_GT": "synch",
+        "T_MULT": "synch",
+        "T_RP": "synch",
+        "T_RSB": "synch",
         "T_TRUE": [
             "logic_imm"
         ],
@@ -802,15 +816,15 @@
         "T_IF": [
             "if_block"
         ],
-        "T_VOID": "synch",
-        "T_CONTINUE": "synch",
-        "T_BOOL": "synch",
-        "T_INT": "synch",
-        "T_CHAR": "synch",
-        "T_BREAK": "synch",
-        "T_RETURN": "synch",
-        "T_PRINT": "synch",
         "T_ID": "synch",
+        "T_RETURN": "synch",
+        "T_CHAR": "synch",
+        "T_INT": "synch",
+        "T_VOID": "synch",
+        "T_BOOL": "synch",
+        "T_PRINT": "synch",
+        "T_CONTINUE": "synch",
+        "T_BREAK": "synch",
         "T_FOR": [
             "for_block"
         ]
@@ -835,37 +849,37 @@
         "E": [
             "E"
         ],
-        "T_FOR": [
-            "E"
-        ],
-        "T_VOID": [
-            "E"
-        ],
-        "T_CONTINUE": [
-            "E"
-        ],
-        "T_BOOL": [
-            "E"
-        ],
-        "T_IF": [
-            "E"
-        ],
-        "T_INT": [
-            "E"
-        ],
-        "T_CHAR": [
-            "E"
-        ],
-        "T_BREAK": [
+        "T_ID": [
             "E"
         ],
         "T_RETURN": [
             "E"
         ],
-        "T_PRINT": [
+        "T_CHAR": [
             "E"
         ],
-        "T_ID": [
+        "T_FOR": [
+            "E"
+        ],
+        "T_INT": [
+            "E"
+        ],
+        "T_VOID": [
+            "E"
+        ],
+        "T_IF": [
+            "E"
+        ],
+        "T_BOOL": [
+            "E"
+        ],
+        "T_CONTINUE": [
+            "E"
+        ],
+        "T_BREAK": [
+            "E"
+        ],
+        "T_PRINT": [
             "E"
         ]
     },
@@ -879,37 +893,37 @@
         "E": [
             "E"
         ],
-        "T_FOR": [
-            "E"
-        ],
-        "T_VOID": [
-            "E"
-        ],
-        "T_CONTINUE": [
-            "E"
-        ],
-        "T_BOOL": [
-            "E"
-        ],
-        "T_IF": [
-            "E"
-        ],
-        "T_INT": [
-            "E"
-        ],
-        "T_CHAR": [
-            "E"
-        ],
-        "T_BREAK": [
+        "T_ID": [
             "E"
         ],
         "T_RETURN": [
             "E"
         ],
-        "T_PRINT": [
+        "T_CHAR": [
             "E"
         ],
-        "T_ID": [
+        "T_FOR": [
+            "E"
+        ],
+        "T_INT": [
+            "E"
+        ],
+        "T_VOID": [
+            "E"
+        ],
+        "T_IF": [
+            "E"
+        ],
+        "T_BOOL": [
+            "E"
+        ],
+        "T_CONTINUE": [
+            "E"
+        ],
+        "T_BREAK": [
+            "E"
+        ],
+        "T_PRINT": [
             "E"
         ]
     },
@@ -925,14 +939,14 @@
         ]
     },
     "for_stmt": {
-        "T_VOID": [
+        "T_ID": [
             "for_init",
             "T_SEMICOLON",
             "for_cond",
             "T_SEMICOLON",
             "for_step"
         ],
-        "T_BOOL": [
+        "T_CHAR": [
             "for_init",
             "T_SEMICOLON",
             "for_cond",
@@ -946,7 +960,7 @@
             "T_SEMICOLON",
             "for_step"
         ],
-        "T_CHAR": [
+        "T_VOID": [
             "for_init",
             "T_SEMICOLON",
             "for_cond",
@@ -960,7 +974,7 @@
             "T_SEMICOLON",
             "for_step"
         ],
-        "T_ID": [
+        "T_BOOL": [
             "for_init",
             "T_SEMICOLON",
             "for_cond",
@@ -970,17 +984,17 @@
         "T_RP": "synch"
     },
     "for_init": {
+        "T_CHAR": [
+            "type",
+            "id_name",
+            "assign_expr"
+        ],
         "T_VOID": [
             "type",
             "id_name",
             "assign_expr"
         ],
         "T_INT": [
-            "type",
-            "id_name",
-            "assign_expr"
-        ],
-        "T_CHAR": [
             "type",
             "id_name",
             "assign_expr"
@@ -1002,10 +1016,28 @@
         ]
     },
     "for_cond": {
-        "T_ID": [
+        "T_NOT": [
             "comp_expr"
         ],
         "T_CHAR_VAL": [
+            "comp_expr"
+        ],
+        "T_STR_VAL": [
+            "comp_expr"
+        ],
+        "T_ID": [
+            "comp_expr"
+        ],
+        "T_LP": [
+            "comp_expr"
+        ],
+        "T_MINUS": [
+            "comp_expr"
+        ],
+        "T_FALSE": [
+            "comp_expr"
+        ],
+        "T_TRUE": [
             "comp_expr"
         ],
         "T_DEC_VAL": [
@@ -1014,25 +1046,7 @@
         "T_HEX_VAL": [
             "comp_expr"
         ],
-        "T_LP": [
-            "comp_expr"
-        ],
-        "T_STR_VAL": [
-            "comp_expr"
-        ],
-        "T_NOT": [
-            "comp_expr"
-        ],
-        "T_TRUE": [
-            "comp_expr"
-        ],
-        "T_MINUS": [
-            "comp_expr"
-        ],
         "T_PLUS": [
-            "comp_expr"
-        ],
-        "T_FALSE": [
             "comp_expr"
         ],
         "E": [
@@ -1055,10 +1069,28 @@
         ]
     },
     "comp_expr": {
-        "T_ID": [
+        "T_NOT": [
             "expr"
         ],
         "T_CHAR_VAL": [
+            "expr"
+        ],
+        "T_STR_VAL": [
+            "expr"
+        ],
+        "T_ID": [
+            "expr"
+        ],
+        "T_LP": [
+            "expr"
+        ],
+        "T_MINUS": [
+            "expr"
+        ],
+        "T_FALSE": [
+            "expr"
+        ],
+        "T_TRUE": [
             "expr"
         ],
         "T_DEC_VAL": [
@@ -1067,25 +1099,7 @@
         "T_HEX_VAL": [
             "expr"
         ],
-        "T_LP": [
-            "expr"
-        ],
-        "T_STR_VAL": [
-            "expr"
-        ],
-        "T_NOT": [
-            "expr"
-        ],
-        "T_TRUE": [
-            "expr"
-        ],
-        "T_MINUS": [
-            "expr"
-        ],
         "T_PLUS": [
-            "expr"
-        ],
-        "T_FALSE": [
             "expr"
         ],
         "T_RP": "synch",
@@ -1122,15 +1136,15 @@
         ]
     },
     "argument_list": {
+        "T_CHAR": [
+            "argument",
+            "argument_list'"
+        ],
         "T_VOID": [
             "argument",
             "argument_list'"
         ],
         "T_INT": [
-            "argument",
-            "argument_list'"
-        ],
-        "T_CHAR": [
             "argument",
             "argument_list'"
         ],
@@ -1159,15 +1173,15 @@
         ]
     },
     "argument": {
+        "T_CHAR": [
+            "type",
+            "id_name"
+        ],
         "T_VOID": [
             "type",
             "id_name"
         ],
         "T_INT": [
-            "type",
-            "id_name"
-        ],
-        "T_CHAR": [
             "type",
             "id_name"
         ],
@@ -1175,23 +1189,11 @@
             "type",
             "id_name"
         ],
-        "T_RP": "synch",
-        "T_COMMA": "synch"
+        "T_COMMA": "synch",
+        "T_RP": "synch"
     },
     "block": {
-        "T_FOR": [
-            "stmt",
-            "block"
-        ],
-        "T_CONTINUE": [
-            "stmt",
-            "block"
-        ],
-        "T_IF": [
-            "stmt",
-            "block"
-        ],
-        "T_BREAK": [
+        "T_ID": [
             "stmt",
             "block"
         ],
@@ -1199,12 +1201,28 @@
             "stmt",
             "block"
         ],
+        "T_FOR": [
+            "stmt",
+            "block"
+        ],
+        "T_IF": [
+            "stmt",
+            "block"
+        ],
         "T_PRINT": [
             "stmt",
             "block"
         ],
-        "T_ID": [
+        "T_CONTINUE": [
             "stmt",
+            "block"
+        ],
+        "T_BREAK": [
+            "stmt",
+            "block"
+        ],
+        "T_CHAR": [
+            "declaration",
             "block"
         ],
         "T_VOID": [
@@ -1212,10 +1230,6 @@
             "block"
         ],
         "T_INT": [
-            "declaration",
-            "block"
-        ],
-        "T_CHAR": [
             "declaration",
             "block"
         ],
@@ -1237,10 +1251,28 @@
         ]
     },
     "return_val": {
-        "T_ID": [
+        "T_NOT": [
             "expr"
         ],
         "T_CHAR_VAL": [
+            "expr"
+        ],
+        "T_STR_VAL": [
+            "expr"
+        ],
+        "T_ID": [
+            "expr"
+        ],
+        "T_LP": [
+            "expr"
+        ],
+        "T_MINUS": [
+            "expr"
+        ],
+        "T_FALSE": [
+            "expr"
+        ],
+        "T_TRUE": [
             "expr"
         ],
         "T_DEC_VAL": [
@@ -1249,25 +1281,7 @@
         "T_HEX_VAL": [
             "expr"
         ],
-        "T_LP": [
-            "expr"
-        ],
-        "T_STR_VAL": [
-            "expr"
-        ],
-        "T_NOT": [
-            "expr"
-        ],
-        "T_TRUE": [
-            "expr"
-        ],
-        "T_MINUS": [
-            "expr"
-        ],
         "T_PLUS": [
-            "expr"
-        ],
-        "T_FALSE": [
             "expr"
         ],
         "E": [

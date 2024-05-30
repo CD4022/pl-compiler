@@ -36,9 +36,11 @@ class Node:
 
 def parse(tokens, parse_table):
     stack = deque()
-    track_back_lst = [1]
+
+    track_back_lst = [2]
     stack.append('$')
     stack.append('program')
+
     root = None
     curr_node = None
     i = 0
@@ -63,6 +65,13 @@ def parse(tokens, parse_table):
             curr_node = curr_node.parent
             continue
 
+        if current == '$':
+            if tokens[i].token_type == 'EOF':
+                break
+            else:
+                print(f'Error: expected EOF got {tokens[i].token_type}')
+                return
+
         if current.startswith('T_'):
             if current == f'T_{tokens[i].token_type}':
                 curr_node.add_child(Node(f"{tokens[i].lexeme}"))
@@ -73,7 +82,7 @@ def parse(tokens, parse_table):
                 print(f'Error: expected {current} got {tokens[i].token_type}')  # TODO: sync
                 return
 
-        applied_rule = parse_table[current][f"T_{tokens[i].token_type}"]
+        applied_rule = parse_table[current][f"T_{tokens[i].token_type}".replace('T_EOF', '$')]
         track_back_lst.append(len(applied_rule))
 
         for t in applied_rule[::-1]:
@@ -94,8 +103,6 @@ def main():
     else:
         root = parse(tokens, parse_table)
         root.print_tree()
-
-
 
 
 if __name__ == '__main__':

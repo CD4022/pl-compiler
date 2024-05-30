@@ -9,7 +9,7 @@ GRAMMAR = {
     "stmt'": [['func_call', 'T_SEMICOLON'], ["id_name'", 'assign_expr', 'T_SEMICOLON']],
     'type': [['T_INT'], ['T_CHAR'], ['T_BOOL'], ['T_VOID']],
     'id_name': [['T_ID', "id_name'"]],
-    "id_name'": [["T_LSB", "calc_expr", "T_RSB"], ["E"]],
+    "id_name'": [["T_LSB", "expr", "T_RSB"], ["E"]],
     "id_list": [["id_list''", "id_list'"]],
     "id_list'": [["T_COMMA", "id_list''", "id_list'"], ["E"]],
     "id_list''": [["id_name", "id_list'''"]],
