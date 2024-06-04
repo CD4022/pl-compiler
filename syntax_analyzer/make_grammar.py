@@ -55,7 +55,7 @@ try:
     with open('lf.json') as f:
         LF_GRAMMAR = json.load(f)
 except FileNotFoundError:
-    LF_GRAMMAR = dict
+    LF_GRAMMAR = dict()
 
 try:
     with open('firsts.json') as f:
@@ -309,8 +309,8 @@ def compute_terminals():
 
 
 def compute_non_terminals():
-    global GRAMMAR, NON_TERMINALS
-    for key in GRAMMAR.keys():
+    global LF_GRAMMAR, NON_TERMINALS
+    for key in LF_GRAMMAR.keys():
         NON_TERMINALS.append(key)
 
     # write them to a file
@@ -339,10 +339,10 @@ def rule_firsts(rule):
 
 
 def create_parse_table():
-    global FIRSTS, FOLLOWS, GRAMMAR
+    global FIRSTS, FOLLOWS, LF_GRAMMAR, TERMINALS
     parse_table = dict()
     for NT in NON_TERMINALS:
-        for rule in GRAMMAR[NT]:
+        for rule in LF_GRAMMAR[NT]:
             if rule[0] in TERMINALS:
                 if NT not in parse_table:
                     parse_table[NT] = dict()
@@ -398,7 +398,7 @@ def check_parse_table():
 
     for NT in NON_TERMINALS:
         for f in FIRSTS[NT]:
-            if parse_table[NT][f] is None:
+            if parse_table[NT].get(f) is None:
                 print(NT, f)
                 return False
 

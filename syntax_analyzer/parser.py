@@ -82,6 +82,17 @@ def parse(tokens, parse_table):
                 print(f'Error: expected {current} got {tokens[i].token_type}')  # TODO: sync
                 return
 
+        if current == "else_if_blocks":
+            j = i + 1
+            token = tokens[j]
+            while token.lexeme in lexer.WHITESPACE.keys():
+                j += 1
+                token = tokens[j]
+            if token.token_type == 'LCB':
+                stack.append('E')
+                track_back_lst.append(1)
+                continue
+
         applied_rule = parse_table[current][f"T_{tokens[i].token_type}".replace('T_EOF', '$')]
         track_back_lst.append(len(applied_rule))
 
