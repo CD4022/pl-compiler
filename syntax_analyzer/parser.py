@@ -90,7 +90,7 @@ def parse(tokens, parse_table):
                 continue
             else:
                 print(f'Error: expected {current} got {tokens[i].token_type}')
-                i, error = panic_mode_recovery(tokens, i, parse_table, stack, current)
+                i, error = panic_mode_recovery(tokens, i, parse_table, stack, curr_node.parent.value)
                 continue
 
         if current == "else_if_blocks" and i + 1 < len(tokens):
@@ -108,7 +108,7 @@ def parse(tokens, parse_table):
             applied_rule = parse_table[current][f"T_{tokens[i].token_type}".replace('T_EOF', '$')]
             track_back_lst.append(len(applied_rule))
         except KeyError:
-            i, error = panic_mode_recovery(tokens, i, parse_table, stack, current)
+            i, error = panic_mode_recovery(tokens, i, parse_table, stack, curr_node.parent.value)
             continue
 
         for t in applied_rule[::-1]:
@@ -126,14 +126,14 @@ def panic_mode_recovery(tokens, token_index: int, parse_table, stack, current):
 
     # get all the synch for the nt from the parse table
     synchs = []
-    for value in parse_table[top_nt].values():
+    for key, value in parse_table[top_nt].items():
         if value == "synch":
-            synchs.append(value)
+            synchs.append(key)
 
     while f'T_{tokens[token_index].token_type}' not in synchs:
         token_index += 1
 
-    error = Error(tokens[start_index].line,
+    error = Error(tokens[start_index].row,
                   tokens[start_index].column,
                   len(tokens[token_index].lexeme) + (tokens[token_index].column - tokens[start_index].column + 1))
 
