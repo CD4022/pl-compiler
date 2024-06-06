@@ -130,7 +130,6 @@ def parse(tokens, parse_table):
         for t in applied_rule[::-1]:
             stack.append(t)
 
-    print("hi")
     return root, errors
 
 
