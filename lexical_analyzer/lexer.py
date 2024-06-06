@@ -282,7 +282,9 @@ def analyze_file(file_path):
     tokens = []
     file_index = 0
     with open(file_path, 'r') as file:
-        for row, line in enumerate(file):
+        lines = file.readlines()
+        lines[-1] = lines[-1] + '\n'
+        for row, line in enumerate(lines):
             col = 0
             while col < len(line):
                 if line[col] in WHITESPACE:
