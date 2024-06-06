@@ -111,13 +111,16 @@ def parse(tokens, parse_table):
 
         try:
             applied_rule = parse_table[current][f"T_{tokens[i].token_type}".replace('T_EOF', '$')]
+            if applied_rule == 'synch':
+                error = Error(tokens[non_ws_i + 1].row, tokens[non_ws_i + 1].column)
+                errors.append(error)
+                continue
             track_back_lst.append(len(applied_rule))
         except KeyError:
             try:
                 applied_rule = parse_table[current]['*']
                 track_back_lst.append(len(applied_rule))
             except KeyError:
-                # i, error = panic_mode_recovery(tokens, i, parse_table, stack, curr_node.parent, track_back_lst)
                 error = Error(tokens[non_ws_i + 1].row, tokens[non_ws_i + 1].column)
                 key_error_occurred = True
                 i += 1
