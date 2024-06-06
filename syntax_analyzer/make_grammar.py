@@ -81,9 +81,6 @@ try:
 except FileNotFoundError:
     NON_TERMINALS = []
 
-def make_grammar():
-    return GRAMMAR
-
 
 # this is only executed once
 def left_factoring(rules_diction):
