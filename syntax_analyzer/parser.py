@@ -34,6 +34,16 @@ class Node:
         return self.value
 
 
+class Error:
+    def __init__(self, line, column, length):
+        self.line = line
+        self.column = column
+        self.length = length
+
+    def __str__(self):
+        return f'Error: at line {self.line} column {self.column}'
+
+
 def parse(tokens, parse_table):
     stack = deque()
 
@@ -79,10 +89,11 @@ def parse(tokens, parse_table):
                 i += 1
                 continue
             else:
-                print(f'Error: expected {current} got {tokens[i].token_type}')  # TODO: sync
-                return
+                print(f'Error: expected {current} got {tokens[i].token_type}')
+                i, error = panic_mode_recovery(tokens, i, parse_table, stack, current)
+                continue
 
-        if current == "else_if_blocks":
+        if current == "else_if_blocks" and i + 1 < len(tokens):
             j = i + 1
             token = tokens[j]
             while token.lexeme in lexer.WHITESPACE.keys():
@@ -93,8 +104,12 @@ def parse(tokens, parse_table):
                 track_back_lst.append(1)
                 continue
 
-        applied_rule = parse_table[current][f"T_{tokens[i].token_type}".replace('T_EOF', '$')]
-        track_back_lst.append(len(applied_rule))
+        try:
+            applied_rule = parse_table[current][f"T_{tokens[i].token_type}".replace('T_EOF', '$')]
+            track_back_lst.append(len(applied_rule))
+        except KeyError:
+            i, error = panic_mode_recovery(tokens, i, parse_table, stack, current)
+            continue
 
         for t in applied_rule[::-1]:
             stack.append(t)
@@ -102,7 +117,33 @@ def parse(tokens, parse_table):
     return root
 
 
+def panic_mode_recovery(tokens, token_index: int, parse_table, stack, current):
+    start_index = token_index
+
+    top_nt = current
+    while top_nt.startswith('T_'):
+        top_nt = stack.pop()
+
+    # get all the synch for the nt from the parse table
+    synchs = []
+    for value in parse_table[top_nt].values():
+        if value == "synch":
+            synchs.append(value)
+
+    while f'T_{tokens[token_index].token_type}' not in synchs:
+        token_index += 1
+
+    error = Error(tokens[start_index].line,
+                  tokens[start_index].column,
+                  len(tokens[token_index].lexeme) + (tokens[token_index].column - tokens[start_index].column + 1))
+
+    return token_index, error
+
+
 def main():
+    with open(argv[1]) as f:
+        code = f.read()
+
     errors, tokens = lexer.lex(argv[1])
     with open('parse_table.json') as f:
         parse_table = json.load(f)
