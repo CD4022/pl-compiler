@@ -191,7 +191,7 @@ def analyze_file(file_path):
 
 
 def main():
-    analyze_file('../test.pl')
+    analyze_file('../test.c')
 
 
 if __name__ == '__main__':
