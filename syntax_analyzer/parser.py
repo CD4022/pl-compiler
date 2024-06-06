@@ -134,35 +134,6 @@ def parse(tokens, parse_table):
     return root, errors
 
 
-def panic_mode_recovery(tokens, token_index: int, parse_table, stack, current, track_back_lst):
-    start_index = token_index
-    parent_count = 1
-    while True:
-        track_back_lst[-parent_count] = 0
-
-        # get all the synch for the nt from the parse table
-        synchs = []
-        for key, value in parse_table[current.value].items():
-            if value == "synch":
-                synchs.append(key)
-
-        j = token_index
-        while j < len(tokens):
-            if f'T_{tokens[token_index].token_type}' in synchs:
-                token_index = j
-                break
-            j += 1
-        else:
-            parent_count += 1
-            current = current.parent
-            continue
-
-        error = Error(tokens[start_index].row,
-                      tokens[start_index].column)
-
-        return token_index, error
-
-
 def main():
     with open(argv[1]) as f:
         code = f.readlines()
