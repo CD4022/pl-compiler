@@ -124,7 +124,8 @@
     "for_cond": [
         "T_SEMICOLON"
     ],
-    "comp_expr'": [],
+    "comp_expr'": [
+    ],
     "comp_expr": [
         "T_SEMICOLON",
         "T_RP"
