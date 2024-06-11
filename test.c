@@ -1,5 +1,3 @@
-if (a || B){
-    break;
-}else if (c){
-    fuck()
+else if (c){
+    fuck();
 }

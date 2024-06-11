@@ -68,11 +68,8 @@ def parse(tokens, parse_table):
                 continue
             track_back_lst[-1] -= 1
 
-        # if not key_error_occurred:
         current = stack.pop()
         curr_node = Node(current, curr_node)
-
-        key_error_occurred = False
 
         if root is None:
             root = curr_node
@@ -82,11 +79,7 @@ def parse(tokens, parse_table):
             continue
 
         if current == '$':
-            if tokens[i].token_type == 'EOF':
-                break
-            else:
-                print(f'Error: expected EOF got {tokens[i].token_type}')
-                return
+            break
 
         if current.startswith('T_'):
             if current == f'T_{tokens[i].token_type}':
@@ -124,7 +117,7 @@ def parse(tokens, parse_table):
                 track_back_lst.append(len(applied_rule))
             except KeyError:
                 error = Error(f"Unexpected {tokens[i]}", tokens[non_ws_i + 1].row, tokens[non_ws_i + 1].column)
-                key_error_occurred = True
+                stack.append(current)
                 i += 1
                 errors.append(error)
                 continue
