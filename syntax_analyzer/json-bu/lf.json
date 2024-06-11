@@ -39,19 +39,6 @@
             "T_SEMICOLON"
         ]
     ],
-    "v_dec": [
-        [
-            "assign_expr",
-            "T_COMMA",
-            "id_list",
-            "T_SEMICOLON"
-        ],
-        [
-            "T_COMMA",
-            "id_list",
-            "T_SEMICOLON"
-        ]
-    ],
     "stmt": [
         [
             "T_ID",
@@ -418,11 +405,9 @@
     "comp_expr'": [
         [
             "comp_bin_op",
-            "comp_expr"
+            "expr"
         ],
-        [
-            "E"
-        ]
+        []
     ],
     "comp_bin_op": [
         [

@@ -4,6 +4,7 @@ GRAMMAR = {
     'program': [['stmt', 'program'], ['declaration', 'program'], ['E']],
     'declaration': [['type', 'T_ID', "dec'"]],
     "dec'": [['func'], ["id_name'", "assign_expr", "id_list'", 'T_SEMICOLON'], ["id_name'", "id_list'", 'T_SEMICOLON']],
+    "v_dec": [["assign_expr", "T_COMMA", "id_list", "T_SEMICOLON"], ["T_COMMA", "id_list", "T_SEMICOLON"]],
     'stmt': [['T_ID', "stmt'"], ['T_PRINT', "func_call", 'T_SEMICOLON'], ['return_stmt', 'T_SEMICOLON'],
              ['T_CONTINUE', 'T_SEMICOLON'], ['T_BREAK', 'T_SEMICOLON'], ['block_expr']],
     "stmt'": [['func_call', 'T_SEMICOLON'], ["id_name'", 'assign_expr', 'T_SEMICOLON']],
@@ -40,7 +41,8 @@ GRAMMAR = {
     'for_init': [['type', 'id_name', 'assign_expr'], ['id_name', 'assign_expr'], ['E']],
     'for_cond': [['comp_expr'], ['E']],
     'for_step': [['id_name', 'assign_expr'], ['E']],
-    'comp_expr': [['expr', 'comp_bin_op', 'comp_expr'], ['expr']],
+    'comp_expr': [['expr', "comp_expr'"]],
+    "comp_expr'": [['comp_bin_op', 'comp_expr'], ["E"]],
     'comp_bin_op': [['T_EQUALS'], ['T_NOT_EQUALS'], ['T_GT'], ['T_LT'], ['T_GE'], ['T_LE']],
     'func': [['T_LP', 'argument_list', 'T_RP', 'T_LCB', 'block', 'T_RCB']],
     'argument_list': [["argument", "argument_list'"], ['E']],
@@ -185,13 +187,11 @@ def first(rule):
                 return f_res
 
 
-def follow(NT):
+def follow(NT, follow_stack=None):
     global LF_GRAMMAR, FIRSTS, FOLLOWS
 
     # if NT in FOLLOW_STACK:
     #     return set()
-
-    # FOLLOW_STACK.append(NT)
 
     if NT == 'program':
         # FOLLOW_STACK.pop()
@@ -209,8 +209,10 @@ def follow(NT):
                 idx = rule.index(NT)
                 if idx == len(rule) - 1:
                     print(key)
-                    if key != NT:
-                        res = res.union(follow(key))
+                    if key != NT and key not in follow_stack:
+                        follow_stack.append(key)
+                        res = res.union(follow(key, follow_stack))
+                        follow_stack.pop()
                 else:
                     if rule[idx + 1].startswith('T_'):
                         res.add(rule[idx + 1])
@@ -219,7 +221,9 @@ def follow(NT):
                         if 'E' in f:
                             f.remove('E')
                             res = res.union(f)
-                            res = res.union(follow(key))
+                            follow_stack.append(key)
+                            res = res.union(follow(key, follow_stack))
+                            follow_stack.pop()
 
                         else:
                             res = res.union(f)
@@ -233,7 +237,7 @@ def compute_all_follows():
     global LF_GRAMMAR, FIRSTS, FOLLOWS
     for NT in LF_GRAMMAR:
         solset = set()
-        sol = follow(NT)
+        sol = follow(NT, [])
         if sol is not None:
             for g in sol:
                 solset.add(g)

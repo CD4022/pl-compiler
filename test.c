@@ -1,3 +1,1 @@
-else if (c){
-    fuck();
-}
+int a, b;
