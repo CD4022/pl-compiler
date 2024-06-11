@@ -1214,27 +1214,27 @@
     "comp_expr'": {
         "T_LT": [
             "comp_bin_op",
-            "expr"
+            "comp_expr"
         ],
         "T_GT": [
             "comp_bin_op",
-            "expr"
+            "comp_expr"
         ],
         "T_GE": [
             "comp_bin_op",
-            "expr"
+            "comp_expr"
         ],
         "T_EQUALS": [
             "comp_bin_op",
-            "expr"
+            "comp_expr"
         ],
         "T_NOT_EQUALS": [
             "comp_bin_op",
-            "expr"
+            "comp_expr"
         ],
         "T_LE": [
             "comp_bin_op",
-            "expr"
+            "comp_expr"
         ],
         "E": [
             "E"

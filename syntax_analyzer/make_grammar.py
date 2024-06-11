@@ -40,7 +40,7 @@ GRAMMAR = {
     'for_init': [['type', 'id_name', 'assign_expr'], ['id_name', 'assign_expr'], ['E']],
     'for_cond': [['comp_expr'], ['E']],
     'for_step': [['id_name', 'assign_expr'], ['E']],
-    'comp_expr': [['expr', 'comp_bin_op', 'expr'], ['expr']],
+    'comp_expr': [['expr', 'comp_bin_op', 'comp_expr'], ['expr']],
     'comp_bin_op': [['T_EQUALS'], ['T_NOT_EQUALS'], ['T_GT'], ['T_LT'], ['T_GE'], ['T_LE']],
     'func': [['T_LP', 'argument_list', 'T_RP', 'T_LCB', 'block', 'T_RCB']],
     'argument_list': [["argument", "argument_list'"], ['E']],

@@ -35,7 +35,8 @@ class Node:
 
 
 class Error:
-    def __init__(self, line, column):
+    def __init__(self, message, line, column):
+        self.message = message
         self.line = line
         self.column = column
 
@@ -60,15 +61,16 @@ def parse(tokens, parse_table):
             i += 1
             continue
 
-        if track_back_lst[-1] and track_back_lst[-1] == 0:
-            curr_node = curr_node.parent
-            track_back_lst.pop()
-            continue
-        track_back_lst[-1] -= 1
+        if len(track_back_lst):
+            if track_back_lst[-1] == 0:
+                curr_node = curr_node.parent
+                track_back_lst.pop()
+                continue
+            track_back_lst[-1] -= 1
 
-        if not key_error_occurred:
-            current = stack.pop()
-            curr_node = Node(current, curr_node)
+        # if not key_error_occurred:
+        current = stack.pop()
+        curr_node = Node(current, curr_node)
 
         key_error_occurred = False
 
@@ -94,7 +96,7 @@ def parse(tokens, parse_table):
                 i += 1
                 continue
             else:
-                error = Error(tokens[non_ws_i + 1].row, tokens[non_ws_i + 1].column)
+                error = Error(f"Expected {current}", tokens[non_ws_i + 1].row, tokens[non_ws_i + 1].column)
                 errors.append(error)
                 continue
 
@@ -112,7 +114,7 @@ def parse(tokens, parse_table):
         try:
             applied_rule = parse_table[current][f"T_{tokens[i].token_type}".replace('T_EOF', '$')]
             if applied_rule == 'synch':
-                error = Error(tokens[non_ws_i + 1].row, tokens[non_ws_i + 1].column)
+                error = Error(f"expected {current}", tokens[non_ws_i + 1].row, tokens[non_ws_i + 1].column)
                 errors.append(error)
                 continue
             track_back_lst.append(len(applied_rule))
@@ -121,7 +123,7 @@ def parse(tokens, parse_table):
                 applied_rule = parse_table[current]['*']
                 track_back_lst.append(len(applied_rule))
             except KeyError:
-                error = Error(tokens[non_ws_i + 1].row, tokens[non_ws_i + 1].column)
+                error = Error(f"Unexpected {tokens[i]}", tokens[non_ws_i + 1].row, tokens[non_ws_i + 1].column)
                 key_error_occurred = True
                 i += 1
                 errors.append(error)
@@ -151,7 +153,7 @@ def main():
         if len(syn_errors):
             for error in syn_errors:
 
-                print(f"\033[31mSyntax error at {error.line}:{error.column}")
+                print(f"\033[31mSyntax error: {error.message} at {error.line}:{error.column}")
                 print(f"\t{code[error.line - 1]}", end='')
                 print(f"\t{'-' * (error.column - 1)}^\033[0m")
         else:

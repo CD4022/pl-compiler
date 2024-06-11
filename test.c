@@ -1,3 +1,5 @@
-int b = a +  *c;
-break;
-break
+if (a || B){
+    break;
+}else if (c){
+    fuck()
+}
