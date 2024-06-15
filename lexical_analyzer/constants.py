@@ -1,4 +1,19 @@
 KEY_WORDS = ['bool', 'break', 'char', 'continue', 'else', 'false', 'for', 'if', 'int', 'print', 'return', 'true', 'void']
+KEY_WORDS_DICT = {
+    'bool': 'BOOL',
+    'break': 'BREAK',
+    'char': 'CHAR',
+    'continue': 'CONTINUE',
+    'else': 'ELSE',
+    'false': 'FALSE',
+    'for': 'FOR',
+    'if': 'IF',
+    'int': 'INT',
+    'print': 'PRINT',
+    'return': 'RETURN',
+    'true': 'TRUE',
+    'void': 'VOID'
+}
 KEY_WORDS.sort()
 
 # print(KEY_WORDS)
@@ -54,3 +69,5 @@ WHITESPACE = {
     '\n': 'NEWLINE',
     '\t': 'TAB'
 }
+
+ALL = list(KEY_WORDS_DICT.items()) + list(OPERATORS.items()) + list(SEPARATORS.items()) + list(QUOTATIONS.items())

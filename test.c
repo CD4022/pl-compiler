@@ -1,6 +1,6 @@
 void print_s(char arr,int a,int b)
 {
-    for (a = "start";){
+    for (a = "start";;){
         break;
     }
     b = a;

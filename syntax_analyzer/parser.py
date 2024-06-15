@@ -3,7 +3,7 @@ from collections import deque
 
 import json
 
-from lexical_analyzer import lexer
+from lexical_analyzer import lexer, constants
 
 
 class Node:
@@ -44,7 +44,15 @@ class Error:
         return f'Error: at line {self.line} column {self.column}'
 
 
-def parse(tokens, parse_table):
+def find_token(token_type):
+    for item in constants.ALL:
+        if item[1] == token_type:
+            return item
+
+    return None
+
+
+def parse(tokens: list, parse_table):
     stack = deque()
 
     track_back_lst = [2]
@@ -90,6 +98,10 @@ def parse(tokens, parse_table):
                 continue
             else:
                 error = Error(f"Expected {current}", tokens[non_ws_i + 1].row, tokens[non_ws_i + 1].column)
+                token_type = current.replace('T_', '')
+                token = find_token(token_type)
+                tokens.insert(i, lexer.Token(token[0], tokens[i].row, tokens[i].column, token[1], 0))
+                stack.append(current)
                 errors.append(error)
                 continue
 
