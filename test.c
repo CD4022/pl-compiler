@@ -1,6 +1,6 @@
 void print_s(char arr,int a,int b)
 {
-    for (a = "start";){
+    for (a = "start";;){
         break;
     }
     b = a;
@@ -27,7 +27,7 @@ void print_s(char arr,int a,int b)
 }
 
 int main(){
-    char arr[5] = "alireza khar";
+    char arr[5] = "ali khar";
     print_s(arr, a, b);
     return -0;
 }
