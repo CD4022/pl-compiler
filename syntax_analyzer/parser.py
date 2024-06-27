@@ -1,8 +1,10 @@
+import os
 from sys import argv
 from collections import deque
 
 import json
 
+import config
 from lexical_analyzer import lexer
 
 
@@ -134,7 +136,7 @@ def main():
         code[-1] = code[-1] + '\n'
 
     lex_errors, tokens = lexer.lex(argv[1])
-    with open('parse_table.json') as f:
+    with open(config.PARSE_TABLE_PATH) as f:
         parse_table = json.load(f)
 
     if len(lex_errors) > 0:
