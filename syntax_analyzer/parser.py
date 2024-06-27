@@ -3,17 +3,19 @@ from sys import argv
 from collections import deque
 
 import json
+from typing import List, Optional
 
 import config
 from lexical_analyzer import lexer
 
 
 class Node:
-    def __init__(self, value, parent=None):
-        self.value = value
-        self.children = []
-        self.parent = parent
-        self.parent.add_child(self) if parent else None
+    def __init__(self, value: int, parent: Optional['Node'] = None):
+        self.value: int = value
+        self.children: List['Node'] = []
+        self.parent: Optional['Node'] = parent
+        if parent:
+            parent.add_child(self)
 
     def add_child(self, child):
         self.children.append(child)
