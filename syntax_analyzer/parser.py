@@ -46,7 +46,7 @@ class Error:
         return f'Error: at line {self.line} column {self.column}'
 
 
-def parse(tokens, parse_table):
+def create_parse_tree(tokens, parse_table):
     stack = deque()
 
     track_back_lst = [2]
@@ -130,29 +130,46 @@ def parse(tokens, parse_table):
     return root, errors
 
 
-def main():
-    with open(argv[1]) as f:
+def load_code(path):
+    with open(path) as f:
         code = f.readlines()
         code[-1] = code[-1] + '\n'
 
-    lex_errors, tokens = lexer.lex(argv[1])
+    return code
+
+
+def load_parse_table():
     with open(config.PARSE_TABLE_PATH) as f:
         parse_table = json.load(f)
+    return parse_table
+
+
+def parse(path):
+    code = load_code(path)
+
+    lex_errors, tokens = lexer.lex(path)
+
+    parse_table = load_parse_table()
 
     if len(lex_errors) > 0:
         for error in lex_errors:
             print(error)
 
     else:
-        root, syn_errors = parse(tokens, parse_table)
+        root, syn_errors = create_parse_tree(tokens, parse_table)
         if len(syn_errors):
             for error in syn_errors:
-
                 print(f"\033[31mSyntax error: {error.message} at {error.line}:{error.column}")
                 print(f"\t{code[error.line - 1]}", end='')
                 print(f"\t{'-' * (error.column - 1)}^\033[0m")
         else:
-            root.print_tree()
+            return root
+
+
+def main():
+    parse_tree = parse(argv[1])
+    if parse_tree:
+        parse_tree.print_tree()
 
 
 if __name__ == '__main__':
