@@ -66,47 +66,6 @@ def traverse_arg_list(node, scope: list, func_type, func_name, args):
 def expr_value(node):
     pass  # TODO: Ali
 
-#
-# def traverse_bin_expr(node: parser.Node):
-#
-#     if node.parent.children[1].children[0].value != 'E':
-#         if node.parent.children[1].children[0].value == 'low_bin_op' \
-#                 or node.children[1].children[0].value == 'high_bin_op':
-#             # Check the first child
-#             is_valid = check_bin_child(node)
-#             # Check the second child
-#             if is_valid:
-#                 is_valid = check_bin_child(node.parent.children[1].children[1])
-#
-#                 if not is_valid:
-#                     return False
-#             else:
-#                 return False
-#
-#     return True
-#
-#
-# def check_bin_child(node):
-#     while len(node.children) != 0:
-#         node = node.children[0]
-#
-#         if node.value == 'term':
-#             is_valid = traverse_bin_expr(node)
-#             if not is_valid:
-#                 return False
-#
-#         if str(node.value).startswith('T_'):
-#             if node.value in constants.non_int_terminals:
-#                 print("operands do not have the same type")
-#                 return False
-#             elif node.value in constants.int_terminals:
-#                 return True
-#             node = node.parent.children[1]
-
-
-def check_expr_type(node: parser.Node):
-    traverse_expr(node)
-
 
 def traverse_expr(node: parser.Node):
     if len(node.children) == 1 and len(node.children[0].children) == 0:
@@ -150,7 +109,6 @@ def traverse_expr(node: parser.Node):
             else:
                 print("operands do not have the same type")
                 return
-        
             
 
 def traverse_parse_tree(node: parser.Node, scope, depth=0):
@@ -161,7 +119,7 @@ def traverse_parse_tree(node: parser.Node, scope, depth=0):
         if child.value == "argument_list":
             continue
         elif child.value == "expr":
-            check_expr_type(child)
+            traverse_expr(child)
 
         # if child.value == "declaration":
         #     pass # TODO: Alireza
