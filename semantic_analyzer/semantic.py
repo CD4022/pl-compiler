@@ -66,41 +66,108 @@ def traverse_arg_list(node, scope: list, func_type, func_name, args):
 def expr_value(node):
     pass  # TODO: Ali
 
+#
+# def traverse_bin_expr(node: parser.Node):
+#
+#     if node.parent.children[1].children[0].value != 'E':
+#         if node.parent.children[1].children[0].value == 'low_bin_op' \
+#                 or node.children[1].children[0].value == 'high_bin_op':
+#             # Check the first child
+#             is_valid = check_bin_child(node)
+#             # Check the second child
+#             if is_valid:
+#                 is_valid = check_bin_child(node.parent.children[1].children[1])
+#
+#                 if not is_valid:
+#                     return False
+#             else:
+#                 return False
+#
+#     return True
+#
+#
+# def check_bin_child(node):
+#     while len(node.children) != 0:
+#         node = node.children[0]
+#
+#         if node.value == 'term':
+#             is_valid = traverse_bin_expr(node)
+#             if not is_valid:
+#                 return False
+#
+#         if str(node.value).startswith('T_'):
+#             if node.value in constants.non_int_terminals:
+#                 print("operands do not have the same type")
+#                 return False
+#             elif node.value in constants.int_terminals:
+#                 return True
+#             node = node.parent.children[1]
 
-def traverse_bin_expr(node: parser.Node):
 
-    if node.children[1].children[0].children[0].value in constants.bin_operators:
-        # Check the first child
-        is_valid = check_child(node)
-        # Check the second child
-        if is_valid:
-            check_child(node.children[1].children[1])
+def check_expr_type(node: parser.Node):
+    traverse_expr(node)
 
 
-def check_child(node):
-    while len(node.children) != 0:
-        node = node.children[0]
+def traverse_expr(node: parser.Node):
+    if len(node.children) == 1 and len(node.children[0].children) == 0:
+        if node.value == "T_ID":
+            for symbol in SYMBOL_TABLE:
+                if symbol.var_name == node.children[0].value:
+                    node.type = symbol.var_type
 
-        if node.value == 'expr':
-            traverse_bin_expr(node)
+        elif node.value in constants.int_terminals:
+            node.type = "INT"    
+        
+        elif node.value in constants.bool_terminals:
+            node.type = "BOOL"
 
-        if str(node.value).startswith('T_'):
-            if node.value in constants.non_int_terminals:
+        elif node.value in constants.non_int_bool_terminals:
+            node.type = "NON_INT_BOOL"
+
+        elif node.value in constants.separators:
+            node.type = "SEPARATOR"
+
+        else:
+            node.type = "E"
+        
+        return
+
+    for child in node.children:
+        traverse_expr(child)
+        
+        # if all children have traversed and have a type
+        # find the type of the parent node
+        if all([child.type is not None for child in node.children]):
+            if len(node.children) == 1:
+                node.type = node.children[0].type
+
+            elif all([child.type in ["INT", "SEPARATOR", "E"] for child in node.children]):
+                node.type = "INT"
+
+            elif all([child.type in ["BOOL", "SEPARATOR", "E"] for child in node.children]):
+                node.type = "BOOL"
+
+            else:
                 print("operands do not have the same type")
-                return False
-            elif node.value in constants.int_terminals:
-                return True
-            node = node.parent.children[1]
-
+                return
+        
+            
 
 def traverse_parse_tree(node: parser.Node, scope, depth=0):
     for child in node.children:
+
         if child.value == "declaration":
             traverse_declaration(child, scope)
         if child.value == "argument_list":
             continue
-        # elif child.value == "expr":
-        #     traverse_bin_expr(child)
+        elif child.value == "expr":
+            check_expr_type(child)
+
+        # if child.value == "declaration":
+        #     pass # TODO: Alireza
+        if child.value == "term":
+            continue
+
         # elif child.value == "if":
         #     pass # TODO: Ali
         # elif child.value == "func_call":
