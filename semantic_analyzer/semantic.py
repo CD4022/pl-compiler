@@ -109,7 +109,7 @@ def traverse_expr(node: parser.Node):
             else:
                 print("operands do not have the same type")
                 return
-            
+
 
 def traverse_parse_tree(node: parser.Node, scope, depth=0):
     for child in node.children:
