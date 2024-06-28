@@ -70,6 +70,7 @@ def expr_value(node):
 def traverse_expr(node: parser.Node):
     if len(node.children) == 1 and len(node.children[0].children) == 0:
         if node.value == "T_ID":
+            node.type = "UNDEFINED"
             for symbol in SYMBOL_TABLE:
                 if symbol.var_name == node.children[0].value:
                     node.type = symbol.var_type
@@ -105,6 +106,10 @@ def traverse_expr(node: parser.Node):
 
             elif all([child.type in ["BOOL", "SEPARATOR", "E"] for child in node.children]):
                 node.type = "BOOL"
+            
+            elif any([child.type == "UNDEFINED" for child in node.children]):
+                print("undefined variable")
+                return
 
             else:
                 print("operands do not have the same type")
