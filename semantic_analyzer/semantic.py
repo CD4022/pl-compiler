@@ -114,6 +114,16 @@ def traverse_expr(node: parser.Node):
             else:
                 print("operands do not have the same type")
                 return
+    
+    return node.type
+
+
+def check_array(node: parser.Node):
+    if node.children[0].value != "E":
+        expr_type = traverse_expr(node.children[1])
+        # TODO: result must be int and > 0
+        if expr_type != "INT":
+            print("array index must be an integer")
 
 
 def traverse_parse_tree(node: parser.Node, scope, depth=0):
@@ -123,9 +133,10 @@ def traverse_parse_tree(node: parser.Node, scope, depth=0):
             traverse_declaration(child, scope)
         if child.value == "argument_list":
             continue
-        elif child.value == "expr":
+        if child.value == "expr":
             traverse_expr(child)
-
+        if child.value == "id_name'":
+            check_array(child)
         # if child.value == "declaration":
         #     pass # TODO: Alireza
         if child.value == "term":
