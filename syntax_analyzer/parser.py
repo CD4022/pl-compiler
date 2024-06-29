@@ -1,4 +1,3 @@
-import os
 from sys import argv
 from collections import deque
 
@@ -10,8 +9,9 @@ from lexical_analyzer import lexer
 
 
 class Node:
-    def __init__(self, value: int, parent: Optional['Node'] = None, node_type=None):
-        self.value: int = value
+    def __init__(self, value: str, row: int, parent: Optional['Node'] = None, node_type=None):
+        self.value: str = value
+        self.row: int = row
         self.children: List['Node'] = []
         self.parent: Optional['Node'] = parent
         if parent:
@@ -31,7 +31,7 @@ class Node:
         return self.children[-1]
 
     def print_tree(self, level=0):
-        print('\t' * level, self.value)
+        print('\t' * level, f"{self.value}: {self.row}")
         for child in self.children:
             child.print_tree(level + 1)
 
@@ -60,7 +60,6 @@ def create_parse_tree(tokens, parse_table):
     errors = []
     curr_node = None
     i, non_ws_i = 0, 0
-    key_error_occurred = False
     while i < len(tokens):
         if tokens[i].lexeme in lexer.WHITESPACE.keys() or tokens[i].token_type == 'COMMENT':
             i += 1
@@ -74,7 +73,7 @@ def create_parse_tree(tokens, parse_table):
             track_back_lst[-1] -= 1
 
         current = stack.pop()
-        curr_node = Node(current, curr_node)
+        curr_node = Node(current, tokens[i].row, curr_node)
 
         if root is None:
             root = curr_node
@@ -88,7 +87,7 @@ def create_parse_tree(tokens, parse_table):
 
         if current.startswith('T_'):
             if current == f'T_{tokens[i].token_type}':
-                curr_node.add_child(Node(f"{tokens[i].lexeme}"))
+                curr_node.add_child(Node(f"{tokens[i].lexeme}", tokens[i].row))
                 curr_node = curr_node.parent
                 non_ws_i = i
                 i += 1
