@@ -9,14 +9,16 @@ from lexical_analyzer import lexer
 
 
 class Node:
-    def __init__(self, value: str, row: int, parent: Optional['Node'] = None, node_type=None):
+    def __init__(self, value: str, row: int, parent: Optional['Node'] = None, node_type=None, imm_val=None, inh_val=None):
         self.value: str = value
+        self.imm_val: int = imm_val
         self.row: int = row
         self.children: List['Node'] = []
         self.parent: Optional['Node'] = parent
         if parent:
             parent.add_child(self)
         self.node_type = node_type
+        self.inh_val = inh_val
         
     def add_child(self, child):
         self.children.append(child)

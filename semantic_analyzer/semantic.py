@@ -17,9 +17,12 @@ class Symbol:
         self.is_arg = True if sym_type.endswith("argument") else False
 
     def __repr__(self):
-        return (f"{self.var_name} {self.var_type} {self.value if not self.is_func and not self.is_arr else '\b'}"
-                f" {'function' if self.is_func else ''} {f'array<{self.var_type}>' if self.is_arr else ''}"
-                f" {f'argument for {self.scope[-1]}' if self.is_arg else ''}")
+        value_str = self.value if not self.is_func and not self.is_arr else ""
+        func_str = "function" if self.is_func else ""
+        arr_str = f"array<{self.var_type}>" if self.is_arr else ""
+        arg_str = f"argument for {self.scope[-1]}" if self.is_arg else ""
+
+        return f"{self.var_name} {self.var_type} {value_str} {func_str} {arr_str} {arg_str}".strip()
 
 
 class Error:
@@ -155,46 +158,67 @@ def traverse_expr(node: parser.Node):
             for symbol in SYMBOL_TABLE:
                 if symbol.var_name == node.children[0].value:
                     node.node_type = symbol.var_type
+                    node.imm_val = int(symbol.value) if symbol.var_type == "INT" else None
 
-        elif node.value in constants.int_terminals:
+        elif node.value in constants.INT_TERMINALS:
             node.node_type = "INT"
+            node.imm_val = int(node.children[0].value)
 
-        elif node.value in constants.bool_terminals:
+        elif node.value in constants.BOOL_TERMINALS:
             node.node_type = "BOOL"
+            node.imm_val = True if node.children[0].value == "true" else False
 
-        elif node.value in constants.non_int_bool_terminals:
+        elif node.value in constants.NON_INT_BOOL_TERMINALS:
             node.node_type = "NON_INT_BOOL"
 
-        elif node.value in constants.separators:
+        elif node.value in constants.SEPARATORS:
             node.node_type = "SEPARATOR"
 
+        elif node.value in constants.BIN_T_OPS.values():
+            node.parent.parent.inh_val = node.parent.parent.children[0].imm_val
+            node.node_type = f'{node.value}'
+
         else:
-            node.node_type = "E"
+            node.node_type = "None"
 
         return
 
     for child in node.children:
         traverse_expr(child)
 
-        # if all children have traversed and have a type
-        # find the type of the parent node
-        if all([child.node_type is not None for child in node.children]):
-            if len(node.children) == 1:
-                node.node_type = node.children[0].node_type
+    # if node.children[0].value == "E":
+    #     node.parent.imm_val = node.inh_val
+    
+    if len(node.children) == 1:
+        node.node_type = node.children[0].node_type
 
-            elif all([child.node_type in ["INT", "SEPARATOR", "E"] for child in node.children]):
-                node.node_type = "INT"
+    elif all([child.node_type in ["INT", "SEPARATOR", "None"] for child in node.children]):
+        node.node_type = "INT"
 
-            elif all([child.node_type in ["BOOL", "SEPARATOR", "E"] for child in node.children]):
-                node.node_type = "BOOL"
+    elif all([child.node_type in ["BOOL", "SEPARATOR", "None"] for child in node.children]):
+        node.node_type = "BOOL"
 
-            elif any([child.node_type == "UNDEFINED" for child in node.children]):
-                print("undefined variable")
-                return
+    elif any([child.node_type in constants.BIN_T_OPS.values() for child in node.children]):
+        if node.node_type == "T_PLUS":
+            node.parent.children[2].inh_val = node.children[0].imm_val + node.children[1].imm_val
+        elif node.node_type == "T_MINUS":
+            node.parent.children[2].inh_val = node.children[0].imm_val - node.children[1].imm_val
+        elif node.node_type == "T_MULT":
+            node.parent.children[2].inh_val = node.children[0].imm_val * node.children[1].imm_val
+        elif node.node_type == "T_DIV":
+            node.parent.children[2].inh_val = node.children[0].imm_val / node.children[1].imm_val
+        elif node.node_type == "T_MOD":
+            node.parent.children[2].inh_val = node.children[0].imm_val % node.children[1].imm_val
+        
+        node.node_type = "INT"
 
-            else:
-                print("operands do not have the same type")
-                return
+    elif any([child.node_type == "UNDEFINED" for child in node.children]):
+        print("undefined variable")
+        return
+
+    else:
+        print("operands do not have the same type")
+        return
 
     return node.node_type
 
@@ -222,23 +246,23 @@ def traverse_parse_tree(node: parser.Node, scope, depth=0):
     for child in node.children:
         if child.value == "declaration":
             traverse_declaration(child, scope.copy())
-        if child.value == "argument_list":
-            continue
-        if child.value == "dec''":
-            continue
-        if child.value == "T_LCB":
-            if child.parent.value == "func":
-                scope = SCOPES[-1].copy()
-            else:
-                scope = new_scope(scope)
-        if child.value == "T_RCB":
-            scope.pop()
+        # if child.value == "argument_list":
+        #     continue
+        # if child.value == "dec''":
+        #     continue
+        # if child.value == "T_LCB":
+        #     if child.parent.value == "func":
+        #         scope = SCOPES[-1].copy()
+        #     else:
+        #         scope = new_scope(scope)
+        # if child.value == "T_RCB":
+        #     scope.pop()
         if child.value == "expr":
             traverse_expr(child)
-        if child.value == "id_name'":
-            check_array(child)
-        if child.value == "term":
-            continue
+        # if child.value == "id_name'":
+        #     check_array(child)
+        # if child.value == "term":
+        #     continue
         # elif child.value == "if":
         #     pass # TODO: Ali
         # elif child.value == "func_call":
