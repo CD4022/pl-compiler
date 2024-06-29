@@ -18,8 +18,8 @@ class Symbol:
 
     def __repr__(self):
         return (f"{self.var_name} {self.var_type} {self.value if not self.is_func and not self.is_arr else '\b'}"
-                f" {'func' if self.is_func else ''} {'arr' if self.is_arr else ''}"
-                f" {f'arg for {self.scope[-1]}' if self.is_arg else ''}")
+                f" {'function' if self.is_func else ''} {f'array<{self.var_type}>' if self.is_arr else ''}"
+                f" {f'argument for {self.scope[-1]}' if self.is_arg else ''}")
 
 
 class Error:
@@ -33,7 +33,7 @@ class Error:
 
 SYMBOL_TABLE = []
 ERRORS = []
-SCOPES = []
+SCOPES = [[]]
 
 
 def traverse_declaration(node: parser.Node, scope):
@@ -47,10 +47,12 @@ def traverse_declaration(node: parser.Node, scope):
     if is_func:
         # traverse the argument_list child
         traverse_arg_list(node.children[2].children[0].children[1], scope, symbol_type, ids[0], [])
+    else:
+        traverse_var_declaration(node.children[2], ids, symbol_type, scope)
 
 
 def traverse_arg_list(node, scope: list, func_type, func_name, args):
-    global SYMBOL_TABLE
+    global SYMBOL_TABLE, SCOPES, ERRORS
     length = 4 if func_type in ('BOOL', 'INT') else 1
     if node.children[0].value == "E":
         symbol = Symbol(func_name, func_type, scope, length, args=args, sym_type="function")
@@ -59,8 +61,10 @@ def traverse_arg_list(node, scope: list, func_type, func_name, args):
             if sym.var_name == func_name and sym.scope == scope:
                 error = Error(f"redefinition of {func_name}", node.row)
                 ERRORS.append(error)
+                break
 
         SYMBOL_TABLE.append(symbol)
+        SCOPES.append(scope + [func_name])
         return
     arg_node_index = 0 if node.value == "argument_list" else 1
     if node.children[arg_node_index].value == "argument":
@@ -82,13 +86,66 @@ def traverse_arg_list(node, scope: list, func_type, func_name, args):
             if sym.var_name == symbol.var_name and sym.scope == symbol.scope:
                 error = Error(f"redefinition of {arg_name}", node.row)
                 ERRORS.append(error)
+                break
         SYMBOL_TABLE.append(symbol)
         args.append(symbol)
         traverse_arg_list(node.children[arg_node_index + 1], scope, func_type, func_name, args)
 
 
+def traverse_var_declaration(node, ids, var_type, scope):
+    var_length = 4 if var_type in ('BOOL', 'INT') else 1
+    if node.children[0].value == "id_name'":
+        var_name = ids[-1]
+
+        # check if the variable is an array
+        is_arr = True if node.children[0].children[0].value != 'E' else False
+        if is_arr:
+            var_length = var_length * expr_value(node.children[0].children[1])
+
+        list_index = 0
+        var_value = 0
+        if node.children[1].children[0].value == "assign_expr":
+            list_index = 1
+            var_value = expr_value(node.children[1].children[0].children[1])
+
+        add_variable(var_name, var_type, scope, var_length, var_value,
+                     f"{'array' if is_arr else 'variable'}", node.row)
+
+        traverse_var_declaration(node.children[1].children[list_index], ids, var_type, scope)
+
+    if node.children[0].value == "T_COMMA":
+        main_clause = node.children[1]
+        var_name = main_clause.children[0].children[0].children[0].value
+
+        # check if the variable is an array
+        is_arr = True if main_clause.children[0].children[1].children[0].value != 'E' else False
+        if is_arr:
+            var_length = var_length * expr_value(main_clause.children[0].children[1].children[1])
+
+        var_value = 0
+        if main_clause.children[1].children[0].value == "assign_expr":
+            var_value = expr_value(main_clause.children[1].children[0].children[1])
+
+        add_variable(var_name, var_type, scope, var_length, var_value,
+                     f"{'array' if is_arr else 'variable'}", node.row)
+
+        traverse_var_declaration(node.children[2], ids, var_type, scope)
+
+
+def add_variable(var_name, var_type, scope, length, value, sym_type, row):
+    global SYMBOL_TABLE
+    symbol = Symbol(var_name, var_type, scope, length, value, sym_type=sym_type)
+    # check if the variable with the same name already exists
+    for sym in SYMBOL_TABLE:
+        if sym.var_name == var_name and sym.scope == scope:
+            error = Error(f"redefinition of {var_name}", row)
+            ERRORS.append(error)
+            break
+    SYMBOL_TABLE.append(symbol)
+
+
 def expr_value(node):
-    pass  # TODO: Ali
+    return 1  # TODO: Ali
 
 
 def traverse_expr(node: parser.Node):
@@ -101,7 +158,7 @@ def traverse_expr(node: parser.Node):
 
         elif node.value in constants.int_terminals:
             node.node_type = "INT"
-        
+
         elif node.value in constants.bool_terminals:
             node.node_type = "BOOL"
 
@@ -113,12 +170,12 @@ def traverse_expr(node: parser.Node):
 
         else:
             node.node_type = "E"
-        
+
         return
 
     for child in node.children:
         traverse_expr(child)
-        
+
         # if all children have traversed and have a type
         # find the type of the parent node
         if all([child.node_type is not None for child in node.children]):
@@ -130,7 +187,7 @@ def traverse_expr(node: parser.Node):
 
             elif all([child.node_type in ["BOOL", "SEPARATOR", "E"] for child in node.children]):
                 node.node_type = "BOOL"
-            
+
             elif any([child.node_type == "UNDEFINED" for child in node.children]):
                 print("undefined variable")
                 return
@@ -138,7 +195,7 @@ def traverse_expr(node: parser.Node):
             else:
                 print("operands do not have the same type")
                 return
-    
+
     return node.node_type
 
 
@@ -150,13 +207,32 @@ def check_array(node: parser.Node):
             print("array index must be an integer")
 
 
+def new_scope(scope):
+    global SCOPES
+    i = 0
+    while True:
+        temp_scope = scope + [i]
+        if temp_scope not in SCOPES:
+            SCOPES.append(temp_scope)
+            return temp_scope.copy()
+        i += 1
+
+
 def traverse_parse_tree(node: parser.Node, scope, depth=0):
     for child in node.children:
-
         if child.value == "declaration":
-            traverse_declaration(child, scope)
+            traverse_declaration(child, scope.copy())
         if child.value == "argument_list":
             continue
+        if child.value == "dec''":
+            continue
+        if child.value == "T_LCB":
+            if child.parent.value == "func":
+                scope = SCOPES[-1].copy()
+            else:
+                scope = new_scope(scope)
+        if child.value == "T_RCB":
+            scope.pop()
         if child.value == "expr":
             traverse_expr(child)
         if child.value == "id_name'":
@@ -189,6 +265,8 @@ def semantic_analyze(parse_tree: parser.Node):
     else:
         for error in ERRORS:
             print(error)
+
+    print("Done!")
 
 
 def main():
