@@ -10,13 +10,13 @@ from lexical_analyzer import lexer
 
 
 class Node:
-    def __init__(self, value: int, parent: Optional['Node'] = None, type = None):
+    def __init__(self, value: int, parent: Optional['Node'] = None, node_type=None):
         self.value: int = value
         self.children: List['Node'] = []
         self.parent: Optional['Node'] = parent
         if parent:
             parent.add_child(self)
-        self.type = type
+        self.node_type = node_type
         
     def add_child(self, child):
         self.children.append(child)
