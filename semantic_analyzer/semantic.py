@@ -376,6 +376,35 @@ def traverse_func_pars(node: parser.Node, func_args, scope, depth=0):
     traverse_func_pars(node.children[expr_index + 1], func_args, scope, depth + 1)
 
 
+def check_assign_expr(node: parser.Node, scope):
+    lhs_id = node.children[0].children[0].value
+    # get symbol from the symbol table
+    lhs_symbol_candidates = []
+    for symbol in SYMBOL_TABLE:
+        if symbol.var_name == lhs_id:
+            lhs_symbol_candidates.append(symbol)
+
+    if len(lhs_symbol_candidates) == 0:
+        error = Error(f"variable {lhs_id} is not defined", node.row)
+        ERRORS.append(error)
+        return
+
+    lhs_symbol = None
+    for symbol in lhs_symbol_candidates:
+        if symbol.scope == scope[:len(symbol.scope)]:
+            lhs_symbol = symbol
+            break
+    if not lhs_symbol:
+        error = Error(f"variable {lhs_id} is not defined in this scope", node.row)
+        ERRORS.append(error)
+        return
+
+    rhs_type = expr_type(node.children[1].children[1].children[1], scope)
+    if lhs_symbol.var_type != rhs_type:
+        error = Error(f"assignment type does not match variable type", node.row)
+        ERRORS.append(error)
+
+
 def expr_type(node: parser.Node, scope):
     e_type, _ = traverse_expr(node, scope)
     return e_type
@@ -407,10 +436,14 @@ def traverse_parse_tree(node: parser.Node, scope):
         if child.value == "return_val":
             continue
         if len(child.children) > 1:
-            if child.value == "stmt" and child.children[1].children[0].value == "func_call":
-                func_name = child.children[0].children[0].value
-                traverse_func_call(child.children[1].children[0], func_name, scope)
-                continue
+            if child.value == "stmt":
+                if len(child.children[1].children) >= 1 and child.children[1].children[0].value == "func_call":
+                    func_name = child.children[0].children[0].value
+                    traverse_func_call(child.children[1].children[0], func_name, scope)
+                    continue
+                if len(child.children[1].children) >= 2 and child.children[1].children[1].value == "assign_expr":
+                    check_assign_expr(child, scope)
+                    continue
         elif child.value == "if":
             check_if(node.parent.children[2], scope)
 
