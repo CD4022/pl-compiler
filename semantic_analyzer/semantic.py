@@ -1,17 +1,19 @@
 from sys import argv
-import constants
+from typing import List, Optional
 
 from syntax_analyzer import parser
+import constants
 
 
 class Symbol:
-    def __init__(self, var_name, var_type, scope: list, length, value=0, args=None, sym_type="variable"):
+    def __init__(self, var_name, var_type, scope: list, length, value=0,
+                 args: Optional['List["Symbol"]'] = None, sym_type="variable"):
         self.var_name = var_name
         self.var_type = var_type
         self.scope = scope
         self.length = length
         self.value = value
-        self.args = args
+        self.args: Optional['List["Symbol"]'] = args
         self.is_func = True if sym_type == "function" else False
         self.is_arr = True if sym_type.startswith("array") else False
         self.is_arg = True if sym_type.endswith("argument") else False
@@ -242,39 +244,62 @@ def new_scope(scope):
         i += 1
 
 
+def traverse_return_stmt(node: parser.Node, scope):
+    return_type = "VOID" if node.children[1].children[0].value == "E" else expr_type(node.children[1].children[0])
+    function_name = ''
+    for member in scope[::-1]:
+        if isinstance(member, str):
+            function_name = member
+            break
+    if function_name == '':
+        error = Error("return statement outside of a function", node.row)
+        ERRORS.append(error)
+        return
+    else:
+        for symbol in SYMBOL_TABLE:
+            if symbol.var_name == function_name and symbol.is_func:
+                if symbol.var_type != return_type:
+                    error = Error(f"return type does not match function type", node.row)
+                    ERRORS.append(error)
+                break
+
+
+
+def expr_type(node: parser.Node):
+    return "INT"  # TODO: Ali
+
+
 def traverse_parse_tree(node: parser.Node, scope, depth=0):
     for child in node.children:
         if child.value == "declaration":
             traverse_declaration(child, scope.copy())
-        # if child.value == "argument_list":
-        #     continue
-        # if child.value == "dec''":
-        #     continue
-        # if child.value == "T_LCB":
-        #     if child.parent.value == "func":
-        #         scope = SCOPES[-1].copy()
-        #     else:
-        #         scope = new_scope(scope)
-        # if child.value == "T_RCB":
-        #     scope.pop()
+        if child.value == "argument_list":
+            continue
+        if child.value == "dec''":
+            continue
+        if child.value == "T_LCB":
+            if child.parent.value == "func":
+                scope = SCOPES[-1].copy()
+            else:
+                scope = new_scope(scope)
+        if child.value == "T_RCB":
+            scope.pop()
         if child.value == "expr":
             traverse_expr(child)
         # if child.value == "id_name'":
         #     check_array(child)
         # if child.value == "term":
         #     continue
+        if child.value == "return_stmt":
+            traverse_return_stmt(child, scope)
+        if child.value == "return_val":
+            continue
+        if child.value == "stmt" and child.children[1].children[0].value == "func_call":
+            func_name = child.children[0].children[0].value
+            traverse_func_call(child.children[1].children[0], func_name, scope)
+            continue
         # elif child.value == "if":
         #     pass # TODO: Ali
-        # elif child.value == "func_call":
-        #     pass # TODO: Alireza
-        # elif child.value == "main":
-        #     pass # TODO: Alireza
-        # elif child.value == "args":
-        #     pass # TODO: Alireza
-        # elif child.value == "pars":
-        #     pass # TODO: Ali
-        # elif child.value == "return":
-        #     pass # TODO: Alireza
 
         if len(child.children) != 0:
             traverse_parse_tree(child, scope)
