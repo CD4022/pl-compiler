@@ -35,6 +35,8 @@ class Error:
     def __str__(self):
         return f'Error: at line {self.row}: {self.message}'
 
+    def __eq__(self, other):
+        return self.message == other.message and self.row == other.row
 
 SYMBOL_TABLE = []
 ERRORS = []
@@ -161,8 +163,11 @@ def traverse_expr(node: parser.Node, scope):
             node.node_type = "UNDEFINED"
             for symbol in SYMBOL_TABLE:
                 if symbol.var_name == node.children[0].value:
+                    symbol_scope = symbol.scope
+                    if symbol_scope != scope[:len(symbol_scope)]:
+                        break
                     node.node_type = symbol.var_type
-                    node.imm_val = int(symbol.value) if symbol.var_type == "INT" else None
+                    node.imm_val = int(symbol.value) if symbol.value and symbol.var_type == "INT" else None
                     return "VALID", None
                     
             return "UNDEFINED", None
@@ -185,6 +190,7 @@ def traverse_expr(node: parser.Node, scope):
             node.node_type = f'{node.value}'
 
         else:
+            node.imm_val = node.inh_val
             node.parent.imm_val = node.inh_val
             if node.parent.node_type and node.node_type != node.parent.node_type:
                 return "INVALID", None
@@ -196,21 +202,27 @@ def traverse_expr(node: parser.Node, scope):
         is_valid, _ = traverse_expr(child, scope)
 
         if is_valid == "INVALID":
-            print("There is a type mismatch in the expression!")
+            error_msg = "There is a type mismatch in the expression!"
+            error = Error(error_msg, node.row)
+            if error not in ERRORS:
+                ERRORS.append(error)
             return "INVALID", None
         
         if is_valid == "UNDEFINED":
-            print("There is an undefined variable in the expression!")
+            error_msg = "There is an undefined variable in the expression!"
+            error = Error(error_msg, node.row)
+            if error not in ERRORS:
+                ERRORS.append(error)
             return "UNDEFINED", None
 
-        if child.node_type == "SEPARATOR":
-            continue
+        # if child.node_type == "SEPARATOR":
+        #     continue
 
         if len(node.children) == 1:
             node.node_type = node.children[0].node_type
             node.imm_val = node.children[0].imm_val
 
-        elif child.value in ["term", "fact", "T_ID"]:
+        elif child.value in ["term", "fact", "expr", "T_ID"]:
             node.children[-1].node_type = child.node_type
             node.children[-1].inh_val = child.imm_val
             if any([child_.node_type in constants.BIN_T_OPS for child_ in node.children]):
@@ -232,24 +244,41 @@ def traverse_expr(node: parser.Node, scope):
                     node.children[-1].inh_val = node.inh_val or node.children[-2].imm_val
                 elif node.children[0].node_type == "T_NOT":
                     node.children[-1].inh_val = not node.children[-2].imm_val
-            
-            elif any([child_.node_type in constants.COM_T_OPS for child_ in node.children]):
-                if node.children[0].node_type == "T_EQUALS":
-                    node.children[-1].inh_val = node.inh_val == node.children[-2].imm_val
-                elif node.children[0].node_type == "T_NOT_EQUALS":
-                    node.children[-1].inh_val = node.inh_val != node.children[-2].imm_val
-                elif node.children[0].node_type == "T_GT":
-                    node.children[-1].inh_val = node.inh_val > node.children[-2].imm_val
-                elif node.children[0].node_type == "T_LT":
-                    node.children[-1].inh_val = node.inh_val < node.children[-2].imm_val
-                elif node.children[0].node_type == "T_GE":
-                    node.children[-1].inh_val = node.inh_val >= node.children[-2].imm_val
-                elif node.children[0].node_type == "T_LE":
-                    node.children[-1].inh_val = node.inh_val <= node.children[-2].imm_val
+
+        elif node.value in ["comp_expr'"] and node.children[-1].imm_val and child.children[0].value not in constants.COM_T_OPS:
+            if any([child_.node_type in constants.COM_T_OPS for child_ in node.children]):
+                if node.node_type == node.children[-1].node_type:
+                    node.node_type = "BOOL"
+                    if node.children[0].node_type == "T_EQUALS":
+                        node.imm_val = node.inh_val == node.children[-1].imm_val
+                    elif node.children[0].node_type == "T_NOT_EQUALS":
+                        node.imm_val = node.inh_val != node.children[-1].imm_val
+                    elif node.children[0].node_type == "T_GT":
+                        node.imm_val = node.inh_val > node.children[-1].imm_val
+                    elif node.children[0].node_type == "T_LT":
+                        node.imm_val = node.inh_val < node.children[-1].imm_val
+                    elif node.children[0].node_type == "T_GE":
+                        node.imm_val = node.inh_val >= node.children[-1].imm_val
+                    elif node.children[0].node_type == "T_LE":
+                        node.imm_val = node.inh_val <= node.children[-1].imm_val
+                else:
+                    error_msg = "There is a type mismatch in the expression!"
+                    error = Error(error_msg, node.row)
+                    if error not in ERRORS:
+                        ERRORS.append(error)
+                    return "INVALID", None
 
         elif node.value in ["term'", "expr'"]:
             node.parent.imm_val = node.imm_val
             node.parent.node_type = node.node_type
+
+        elif node.value == "comp_expr":
+            if child.value == "expr":
+                node.children[-1].node_type = child.node_type
+                node.children[-1].inh_val = child.imm_val
+            else:
+                node.imm_val = child.imm_val
+                node.node_type = child.node_type
 
         elif node.value == "fact" and node.children[0].node_type == "SEPARATOR":
             node.node_type = node.children[1].node_type
@@ -259,15 +288,24 @@ def traverse_expr(node: parser.Node, scope):
             node.node_type = node.children[-1].node_type
             node.imm_val = -node.children[-1].imm_val if node.children[0].node_type == "T_MINUS" \
                 else not node.children[-1].imm_val
-
+    
     return node.node_type, node.imm_val
 
 
 def check_array(node: parser.Node, scope):
     if node.children[0].value != "E":
-        inner_expr_type, expr_val = traverse_expr(node.children[1], scope)
-        if inner_expr_type != "INT" and expr_val > 0:
-            print("array index must be an integer")
+        _expr_type, expr_val = traverse_expr(node.children[1], scope)
+        if _expr_type != "INT" and expr_val > 0:
+            error = Error("array index must be an integer", node.row)
+            ERRORS.append(error)
+
+
+def check_if(node: parser.Node, scope):
+    _expr_type = expr_type(node, scope)
+    if _expr_type != "BOOL":
+        error = Error("condition in if statement must be of type BOOL", node.row)
+        ERRORS.append(error)
+        return
 
 
 def new_scope(scope):
@@ -373,8 +411,8 @@ def traverse_parse_tree(node: parser.Node, scope):
                 func_name = child.children[0].children[0].value
                 traverse_func_call(child.children[1].children[0], func_name, scope)
                 continue
-        # elif child.value == "if":
-        #     pass # TODO: Ali
+        elif child.value == "if":
+            check_if(node.parent.children[2], scope)
 
         if len(child.children) != 0:
             traverse_parse_tree(child, scope)
