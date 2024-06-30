@@ -159,21 +159,17 @@ def traverse_expr(node: parser.Node):
             node.node_type = "UNDEFINED"
             for symbol in SYMBOL_TABLE:
                 if symbol.var_name == node.children[0].value:
-                    # Todo: check if the variable is int or bool for error handling
                     node.node_type = symbol.var_type
                     node.imm_val = int(symbol.value) if symbol.var_type == "INT" else None
-
+                    return "VALID", None
+                    
             return "UNDEFINED", None
 
         elif node.value in constants.INT_TERMINALS:
-            if node.node_type == "BOOL":
-                return "INVALID", None
             node.node_type = "INT"
             node.imm_val = int(node.children[0].value)
 
         elif node.value in constants.BOOL_TERMINALS:
-            if node.node_type == "INT":
-                return "INVALID", None
             node.node_type = "BOOL"
             node.imm_val = True if node.children[0].value == "true" else False
 
@@ -183,7 +179,7 @@ def traverse_expr(node: parser.Node):
         elif node.value in constants.SEPARATORS:
             node.node_type = "SEPARATOR"
 
-        elif node.value in constants.BIN_T_OPS:
+        elif node.value in constants.BIN_T_OPS: # Todo: merge these two
             node.node_type = f'{node.value}'
 
         elif node.value in constants.UN_T_OPS:
@@ -207,12 +203,15 @@ def traverse_expr(node: parser.Node):
         if is_valid == "UNDEFINED":
             print("There is an undefined variable in the expression!")
             return "UNDEFINED", None
-        
+
+        if child.node_type == "SEPARATOR":
+            continue
+
         if len(node.children) == 1:
             node.node_type = node.children[0].node_type
             node.imm_val = node.children[0].imm_val
 
-        if child.value in ["term", "fact"]:
+        elif child.value in ["term", "fact", "T_ID"]:
             node.children[-1].node_type = child.node_type
             node.children[-1].inh_val = child.imm_val
             if any([child_.node_type in constants.BIN_T_OPS for child_ in node.children]):
@@ -243,7 +242,7 @@ def traverse_expr(node: parser.Node):
             node.node_type = node.children[1].node_type
             node.imm_val = node.children[1].imm_val
 
-        elif node.value == "un_expr" and len(node.children) > 1 and node.children[1].node_type != None:
+        elif node.value == "un_expr" and len(node.children) > 1 and node.children[1].node_type:
             node.node_type = node.children[-1].node_type
             node.imm_val = -node.children[-1].imm_val if node.children[0].node_type == "T_MINUS" else not node.children[-1].imm_val
 
@@ -252,8 +251,8 @@ def traverse_expr(node: parser.Node):
 
 def check_array(node: parser.Node):
     if node.children[0].value != "E":
-        expr_type, expr_val = traverse_expr(node.children[1])
-        if expr_type != "INT" and expr_val > 0:
+        inner_expr_type, expr_val = traverse_expr(node.children[1])
+        if inner_expr_type != "INT" and expr_val > 0:
             print("array index must be an integer")
 
 
@@ -334,29 +333,29 @@ def traverse_parse_tree(node: parser.Node, scope, depth=0):
             traverse_declaration(child, scope.copy())
         if child.value == "argument_list":
             continue
-        if child.value == "dec''":
-            continue
-        if child.value == "T_LCB":
-            if child.parent.value == "func":
-                scope = SCOPES[-1].copy()
-            else:
-                scope = new_scope(scope)
-        if child.value == "T_RCB":
-            scope.pop()
+        # if child.value == "dec''":
+        #     continue
+        # if child.value == "T_LCB":
+        #     if child.parent.value == "func":
+        #         scope = SCOPES[-1].copy()
+        #     else:
+        #         scope = new_scope(scope)
+        # if child.value == "T_RCB":
+        #     scope.pop()
         if child.value == "expr":
-            traverse_expr(child)
+            v1, v2 = traverse_expr(child)
         if child.value == "id_name'":
             check_array(child)
         # if child.value == "term":
         #     continue
-        if child.value == "return_stmt":
-            traverse_return_stmt(child, scope)
-        if child.value == "return_val":
-            continue
-        if child.value == "stmt" and child.children[1].children[0].value == "func_call":
-            func_name = child.children[0].children[0].value
-            traverse_func_call(child.children[1].children[0], func_name, scope)
-            continue
+        # if child.value == "return_stmt":
+        #     traverse_return_stmt(child, scope)
+        # if child.value == "return_val":
+        #     continue
+        # if child.value == "stmt" and child.children[1].children[0].value == "func_call":
+        #     func_name = child.children[0].children[0].value
+        #     traverse_func_call(child.children[1].children[0], func_name, scope)
+        #     continue
         # elif child.value == "if":
         #     pass # TODO: Ali
 
