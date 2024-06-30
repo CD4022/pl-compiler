@@ -19,10 +19,16 @@ NON_INT_BOOL_TERMINALS = [
     'T_CHAR_VAL',
 ]
 
-BIN_T_OPS = {
-    '+': 'T_PLUS',
-    '-': 'T_MINUS',
-    '*': 'T_MULT',
-    '/': 'T_DIV',
-    '%': 'T_MOD'
-}
+BIN_T_OPS = [
+    'T_PLUS',
+    'T_MINUS',
+    'T_MULT',
+    'T_DIV',
+    'T_MOD'
+]
+
+UN_T_OPS = [
+    'T_AND',
+    'T_OR',
+    'T_NOT'
+]

@@ -159,77 +159,101 @@ def traverse_expr(node: parser.Node):
             node.node_type = "UNDEFINED"
             for symbol in SYMBOL_TABLE:
                 if symbol.var_name == node.children[0].value:
+                    # Todo: check if the variable is int or bool for error handling
                     node.node_type = symbol.var_type
                     node.imm_val = int(symbol.value) if symbol.var_type == "INT" else None
 
+            return "UNDEFINED", None
+
         elif node.value in constants.INT_TERMINALS:
+            if node.node_type == "BOOL":
+                return "INVALID", None
             node.node_type = "INT"
             node.imm_val = int(node.children[0].value)
 
         elif node.value in constants.BOOL_TERMINALS:
+            if node.node_type == "INT":
+                return "INVALID", None
             node.node_type = "BOOL"
             node.imm_val = True if node.children[0].value == "true" else False
 
         elif node.value in constants.NON_INT_BOOL_TERMINALS:
-            node.node_type = "NON_INT_BOOL"
+            return "INVALID", None
 
         elif node.value in constants.SEPARATORS:
             node.node_type = "SEPARATOR"
 
-        elif node.value in constants.BIN_T_OPS.values():
-            node.parent.parent.inh_val = node.parent.parent.children[0].imm_val
+        elif node.value in constants.BIN_T_OPS:
+            node.node_type = f'{node.value}'
+
+        elif node.value in constants.UN_T_OPS:
             node.node_type = f'{node.value}'
 
         else:
-            node.node_type = "None"
+            node.parent.imm_val = node.inh_val
+            if node.parent.node_type and node.node_type != node.parent.node_type:
+                return "INVALID", None
+            node.parent.node_type = node.node_type
 
-        return
+        return "VALID", None
 
     for child in node.children:
-        traverse_expr(child)
+        is_valid, _ = traverse_expr(child)
 
-    # if node.children[0].value == "E":
-    #     node.parent.imm_val = node.inh_val
-    
-    if len(node.children) == 1:
-        node.node_type = node.children[0].node_type
-
-    elif all([child.node_type in ["INT", "SEPARATOR", "None"] for child in node.children]):
-        node.node_type = "INT"
-
-    elif all([child.node_type in ["BOOL", "SEPARATOR", "None"] for child in node.children]):
-        node.node_type = "BOOL"
-
-    elif any([child.node_type in constants.BIN_T_OPS.values() for child in node.children]):
-        if node.node_type == "T_PLUS":
-            node.parent.children[2].inh_val = node.children[0].imm_val + node.children[1].imm_val
-        elif node.node_type == "T_MINUS":
-            node.parent.children[2].inh_val = node.children[0].imm_val - node.children[1].imm_val
-        elif node.node_type == "T_MULT":
-            node.parent.children[2].inh_val = node.children[0].imm_val * node.children[1].imm_val
-        elif node.node_type == "T_DIV":
-            node.parent.children[2].inh_val = node.children[0].imm_val / node.children[1].imm_val
-        elif node.node_type == "T_MOD":
-            node.parent.children[2].inh_val = node.children[0].imm_val % node.children[1].imm_val
+        if is_valid == "INVALID":
+            print("There is a type mismatch in the expression!")
+            return "INVALID", None
         
-        node.node_type = "INT"
+        if is_valid == "UNDEFINED":
+            print("There is an undefined variable in the expression!")
+            return "UNDEFINED", None
+        
+        if len(node.children) == 1:
+            node.node_type = node.children[0].node_type
+            node.imm_val = node.children[0].imm_val
 
-    elif any([child.node_type == "UNDEFINED" for child in node.children]):
-        print("undefined variable")
-        return
+        if child.value in ["term", "fact"]:
+            node.children[-1].node_type = child.node_type
+            node.children[-1].inh_val = child.imm_val
+            if any([child_.node_type in constants.BIN_T_OPS for child_ in node.children]):
+                if node.children[0].node_type == "T_PLUS":
+                    node.children[-1].inh_val = node.inh_val + node.children[-2].imm_val
+                elif node.children[0].node_type == "T_MINUS":
+                    node.children[-1].inh_val = node.inh_val - node.children[-2].imm_val
+                elif node.children[0].node_type == "T_MULT":
+                    node.children[-1].inh_val = node.inh_val * node.children[-2].imm_val
+                elif node.children[0].node_type == "T_DIV":
+                    node.children[-1].inh_val = node.inh_val / node.children[-2].imm_val
+                elif node.children[0].node_type == "T_MOD":
+                    node.children[-1].inh_val = node.inh_val % node.children[-2].imm_val
 
-    else:
-        print("operands do not have the same type")
-        return
+            elif any([child_.node_type in constants.UN_T_OPS for child_ in node.children]):
+                if node.children[0].node_type == "T_AND":
+                    node.children[-1].inh_val = node.inh_val and node.children[-2].imm_val
+                elif node.children[0].node_type == "T_OR":
+                    node.children[-1].inh_val = node.inh_val or node.children[-2].imm_val
+                elif node.children[0].node_type == "T_NOT":
+                    node.children[-1].inh_val = not node.children[-2].imm_val
 
-    return node.node_type
+        elif node.value in ["term'", "expr'"]:
+            node.parent.imm_val = node.imm_val
+            node.parent.node_type = node.node_type
+
+        elif node.value == "fact" and node.children[0].node_type == "SEPARATOR":
+            node.node_type = node.children[1].node_type
+            node.imm_val = node.children[1].imm_val
+
+        elif node.value == "un_expr" and len(node.children) > 1 and node.children[1].node_type != None:
+            node.node_type = node.children[-1].node_type
+            node.imm_val = -node.children[-1].imm_val if node.children[0].node_type == "T_MINUS" else not node.children[-1].imm_val
+
+    return node.node_type, node.imm_val
 
 
 def check_array(node: parser.Node):
     if node.children[0].value != "E":
-        expr_type = traverse_expr(node.children[1])
-        # TODO: result must be int and > 0
-        if expr_type != "INT":
+        expr_type, expr_val = traverse_expr(node.children[1])
+        if expr_type != "INT" and expr_val > 0:
             print("array index must be an integer")
 
 
@@ -321,8 +345,8 @@ def traverse_parse_tree(node: parser.Node, scope, depth=0):
             scope.pop()
         if child.value == "expr":
             traverse_expr(child)
-        # if child.value == "id_name'":
-        #     check_array(child)
+        if child.value == "id_name'":
+            check_array(child)
         # if child.value == "term":
         #     continue
         if child.value == "return_stmt":
