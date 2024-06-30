@@ -149,10 +149,6 @@ def add_variable(var_name, var_type, scope, length, value, sym_type, row):
     SYMBOL_TABLE.append(symbol)
 
 
-def expr_value(node):
-    return 1  # TODO: Ali
-
-
 def traverse_expr(node: parser.Node):
     if len(node.children) == 1 and len(node.children[0].children) == 0:
         if node.value == "T_ID":
@@ -179,10 +175,7 @@ def traverse_expr(node: parser.Node):
         elif node.value in constants.SEPARATORS:
             node.node_type = "SEPARATOR"
 
-        elif node.value in constants.BIN_T_OPS: # Todo: merge these two
-            node.node_type = f'{node.value}'
-
-        elif node.value in constants.UN_T_OPS:
+        elif node.value in constants.ALL_OPS:
             node.node_type = f'{node.value}'
 
         else:
@@ -233,6 +226,20 @@ def traverse_expr(node: parser.Node):
                     node.children[-1].inh_val = node.inh_val or node.children[-2].imm_val
                 elif node.children[0].node_type == "T_NOT":
                     node.children[-1].inh_val = not node.children[-2].imm_val
+            
+            elif any([child_.node_type in constants.COM_T_OPS for child_ in node.children]):
+                if node.children[0].node_type == "T_EQUALS":
+                    node.children[-1].inh_val = node.inh_val == node.children[-2].imm_val
+                elif node.children[0].node_type == "T_NOT_EQUALS":
+                    node.children[-1].inh_val = node.inh_val != node.children[-2].imm_val
+                elif node.children[0].node_type == "T_GT":
+                    node.children[-1].inh_val = node.inh_val > node.children[-2].imm_val
+                elif node.children[0].node_type == "T_LT":
+                    node.children[-1].inh_val = node.inh_val < node.children[-2].imm_val
+                elif node.children[0].node_type == "T_GE":
+                    node.children[-1].inh_val = node.inh_val >= node.children[-2].imm_val
+                elif node.children[0].node_type == "T_LE":
+                    node.children[-1].inh_val = node.inh_val <= node.children[-2].imm_val
 
         elif node.value in ["term'", "expr'"]:
             node.parent.imm_val = node.imm_val
@@ -343,7 +350,7 @@ def traverse_parse_tree(node: parser.Node, scope, depth=0):
         # if child.value == "T_RCB":
         #     scope.pop()
         if child.value == "expr":
-            v1, v2 = traverse_expr(child)
+            traverse_expr(child)
         if child.value == "id_name'":
             check_array(child)
         # if child.value == "term":

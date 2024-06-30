@@ -32,3 +32,14 @@ UN_T_OPS = [
     'T_OR',
     'T_NOT'
 ]
+
+COM_T_OPS = [
+    'T_EQUALS',
+    'T_NOT_EQUALS',
+    'T_GT',
+    'T_LT',
+    'T_GE',
+    'T_LE'
+]
+
+ALL_OPS = BIN_T_OPS + UN_T_OPS + COM_T_OPS
