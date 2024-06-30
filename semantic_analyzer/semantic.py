@@ -257,7 +257,8 @@ def traverse_expr(node: parser.Node, scope):
 
         elif node.value == "un_expr" and len(node.children) > 1 and node.children[1].node_type:
             node.node_type = node.children[-1].node_type
-            node.imm_val = -node.children[-1].imm_val if node.children[0].node_type == "T_MINUS" else not node.children[-1].imm_val
+            node.imm_val = -node.children[-1].imm_val if node.children[0].node_type == "T_MINUS" \
+                else not node.children[-1].imm_val
 
     return node.node_type, node.imm_val
 
@@ -342,7 +343,7 @@ def expr_type(node: parser.Node, scope):
     return e_type
 
 
-def traverse_parse_tree(node: parser.Node, scope, depth=0):
+def traverse_parse_tree(node: parser.Node, scope):
     for child in node.children:
         if child.value == "declaration":
             traverse_declaration(child, scope.copy())
