@@ -81,7 +81,8 @@ def traverse_arg_list(node, scope: list, func_type, func_name, args):
 
         # check if the argument is an array
         if node.children[arg_node_index].children[1].children[1].children[0].value != 'E':
-            arg_length = arg_length * expr_value(node.children[arg_node_index].children[1].children[1].children[1])
+            arg_length = arg_length * expr_value(node.children[arg_node_index].children[1].children[1].children[1],
+                                                 scope)
             is_arr = True
 
         symbol = Symbol(arg_name, arg_type, scope + [func_name], arg_length,
@@ -105,13 +106,13 @@ def traverse_var_declaration(node, ids, var_type, scope):
         # check if the variable is an array
         is_arr = True if node.children[0].children[0].value != 'E' else False
         if is_arr:
-            var_length = var_length * expr_value(node.children[0].children[1])
+            var_length = var_length * expr_value(node.children[0].children[1], scope)
 
         list_index = 0
         var_value = 0
         if node.children[1].children[0].value == "assign_expr":
             list_index = 1
-            var_value = expr_value(node.children[1].children[0].children[1])
+            var_value = expr_value(node.children[1].children[0].children[1], scope)
 
         add_variable(var_name, var_type, scope, var_length, var_value,
                      f"{'array' if is_arr else 'variable'}", node.row)
@@ -125,11 +126,11 @@ def traverse_var_declaration(node, ids, var_type, scope):
         # check if the variable is an array
         is_arr = True if main_clause.children[0].children[1].children[0].value != 'E' else False
         if is_arr:
-            var_length = var_length * expr_value(main_clause.children[0].children[1].children[1])
+            var_length = var_length * expr_value(main_clause.children[0].children[1].children[1], scope)
 
         var_value = 0
         if main_clause.children[1].children[0].value == "assign_expr":
-            var_value = expr_value(main_clause.children[1].children[0].children[1])
+            var_value = expr_value(main_clause.children[1].children[0].children[1], scope)
 
         add_variable(var_name, var_type, scope, var_length, var_value,
                      f"{'array' if is_arr else 'variable'}", node.row)
@@ -137,8 +138,8 @@ def traverse_var_declaration(node, ids, var_type, scope):
         traverse_var_declaration(node.children[2], ids, var_type, scope)
 
 
-def expr_value(node: parser.Node):
-    _, value = traverse_expr(node)
+def expr_value(node: parser.Node, scope):
+    _, value = traverse_expr(node, scope)
     return value
 
 
@@ -154,7 +155,7 @@ def add_variable(var_name, var_type, scope, length, value, sym_type, row):
     SYMBOL_TABLE.append(symbol)
 
 
-def traverse_expr(node: parser.Node):
+def traverse_expr(node: parser.Node, scope):
     if len(node.children) == 1 and len(node.children[0].children) == 0:
         if node.value == "T_ID":
             node.node_type = "UNDEFINED"
@@ -192,7 +193,7 @@ def traverse_expr(node: parser.Node):
         return "VALID", None
 
     for child in node.children:
-        is_valid, _ = traverse_expr(child)
+        is_valid, _ = traverse_expr(child, scope)
 
         if is_valid == "INVALID":
             print("There is a type mismatch in the expression!")
@@ -261,9 +262,9 @@ def traverse_expr(node: parser.Node):
     return node.node_type, node.imm_val
 
 
-def check_array(node: parser.Node):
+def check_array(node: parser.Node, scope):
     if node.children[0].value != "E":
-        inner_expr_type, expr_val = traverse_expr(node.children[1])
+        inner_expr_type, expr_val = traverse_expr(node.children[1], scope)
         if inner_expr_type != "INT" and expr_val > 0:
             print("array index must be an integer")
 
@@ -280,7 +281,8 @@ def new_scope(scope):
 
 
 def traverse_return_stmt(node: parser.Node, scope):
-    return_type = "VOID" if node.children[1].children[0].value == "E" else expr_type(node.children[1].children[0])
+    return_type = "VOID" if node.children[1].children[0].value == "E" else expr_type(node.children[1].children[0],
+                                                                                     scope)
     function_name = ''
     for member in scope[::-1]:
         if isinstance(member, str):
@@ -328,15 +330,15 @@ def traverse_func_pars(node: parser.Node, func_args, scope, depth=0):
         ERRORS.append(error)
         return
 
-    if func_args[depth].var_type != expr_type(node.children[expr_index]):
+    if func_args[depth].var_type != expr_type(node.children[expr_index], scope):
         error = Error(f"argument type does not match function parameter type", node.row)
         ERRORS.append(error)
         return
     traverse_func_pars(node.children[expr_index + 1], func_args, scope, depth + 1)
 
 
-def expr_type(node: parser.Node):
-    e_type, _ = traverse_expr(node)
+def expr_type(node: parser.Node, scope):
+    e_type, _ = traverse_expr(node, scope)
     return e_type
 
 
@@ -356,9 +358,9 @@ def traverse_parse_tree(node: parser.Node, scope, depth=0):
         if child.value == "T_RCB":
             scope.pop()
         if child.value == "expr":
-            traverse_expr(child)
+            traverse_expr(child, scope)
         if child.value == "id_name'":
-            check_array(child)
+            check_array(child, scope)
         if child.value == "term":
             continue
         if child.value == "return_stmt":
