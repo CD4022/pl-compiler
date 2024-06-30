@@ -305,9 +305,18 @@ def traverse_parse_tree(node: parser.Node, scope, depth=0):
             traverse_parse_tree(child, scope)
 
 
+def check_main_func():
+    for symbol in SYMBOL_TABLE:
+        if symbol.var_name == "main" and symbol.is_func and symbol.var_type == "INT":
+            return
+    error = Error("no main function with return type <INT>", 0)
+    ERRORS.append(error)
+
+
 def semantic_analyze(parse_tree: parser.Node):
     curr_node = parse_tree
     traverse_parse_tree(curr_node, [])
+    check_main_func()
     if not len(ERRORS):
         for symbol in SYMBOL_TABLE:
             print(symbol)
