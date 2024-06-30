@@ -264,6 +264,41 @@ def traverse_return_stmt(node: parser.Node, scope):
                 break
 
 
+def traverse_func_call(node: parser.Node, func_name, scope):
+    # find function in symbol table
+    func_id = None
+    for symbol in SYMBOL_TABLE:
+        if symbol.var_name == func_name and symbol.is_func:
+            func_id = symbol
+            break
+    if func_id is None:
+        error = Error(f"function {func_name} is not defined", node.row)
+        ERRORS.append(error)
+        return
+    func_args = func_id.args
+    traverse_func_pars(node.children[1], func_args, scope)
+
+
+def traverse_func_pars(node: parser.Node, func_args, scope, depth=0):
+    expr_index = 0 if node.value == "par_list" else 1
+
+    if node.children[0].value == "E":
+        if len(func_args) != depth:
+            error = Error(f"missing arguments for function call", node.row)
+            ERRORS.append(error)
+        return
+
+    if depth > len(func_args) - 1:
+        error = Error(f"too many arguments for function call", node.row)
+        ERRORS.append(error)
+        return
+
+    if func_args[depth].var_type != expr_type(node.children[expr_index]):
+        error = Error(f"argument type does not match function parameter type", node.row)
+        ERRORS.append(error)
+        return
+    traverse_func_pars(node.children[expr_index + 1], func_args, scope, depth + 1)
+
 
 def expr_type(node: parser.Node):
     return "INT"  # TODO: Ali
