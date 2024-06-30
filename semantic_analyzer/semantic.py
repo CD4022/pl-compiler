@@ -167,21 +167,25 @@ def traverse_expr(node: parser.Node, scope):
                     if symbol_scope != scope[:len(symbol_scope)]:
                         break
                     node.node_type = symbol.var_type
-                    node.imm_val = int(symbol.value) if symbol.value and symbol.var_type == "INT" else None
+                    node.imm_val = int(symbol.value) if symbol.value != None and symbol.var_type == "INT" else None
                     return "VALID", None
                     
             return "UNDEFINED", None
 
         elif node.value in constants.INT_TERMINALS:
             node.node_type = "INT"
-            node.imm_val = int(node.children[0].value)
+            if isinstance(node.children[0].value, str):
+                node.imm_val = int(node.children[0].value, 16)
+            else:
+                node.imm_val = int(node.children[0].value)
 
         elif node.value in constants.BOOL_TERMINALS:
             node.node_type = "BOOL"
             node.imm_val = True if node.children[0].value == "true" else False
 
         elif node.value in constants.NON_INT_BOOL_TERMINALS:
-            return "INVALID", None
+            node.node_type = f"{node.value}"
+            node.imm_val = node.value
 
         elif node.value in constants.SEPARATORS:
             node.node_type = "SEPARATOR"
@@ -301,6 +305,8 @@ def check_array(node: parser.Node, scope):
 
 
 def check_if(node: parser.Node, scope):
+    if node.value == "T_LP":
+        node = node.parent.children[3]
     _expr_type = expr_type(node, scope)
     if _expr_type != "BOOL":
         error = Error("condition in if statement must be of type BOOL", node.row)
