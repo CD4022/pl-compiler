@@ -137,6 +137,11 @@ def traverse_var_declaration(node, ids, var_type, scope):
         traverse_var_declaration(node.children[2], ids, var_type, scope)
 
 
+def expr_value(node: parser.Node):
+    _, value = traverse_expr(node)
+    return value
+
+
 def add_variable(var_name, var_type, scope, length, value, sym_type, row):
     global SYMBOL_TABLE
     symbol = Symbol(var_name, var_type, scope, length, value, sym_type=sym_type)
@@ -331,7 +336,8 @@ def traverse_func_pars(node: parser.Node, func_args, scope, depth=0):
 
 
 def expr_type(node: parser.Node):
-    return "INT"  # TODO: Ali
+    e_type, _ = traverse_expr(node)
+    return e_type
 
 
 def traverse_parse_tree(node: parser.Node, scope, depth=0):
@@ -340,29 +346,30 @@ def traverse_parse_tree(node: parser.Node, scope, depth=0):
             traverse_declaration(child, scope.copy())
         if child.value == "argument_list":
             continue
-        # if child.value == "dec''":
-        #     continue
-        # if child.value == "T_LCB":
-        #     if child.parent.value == "func":
-        #         scope = SCOPES[-1].copy()
-        #     else:
-        #         scope = new_scope(scope)
-        # if child.value == "T_RCB":
-        #     scope.pop()
+        if child.value == "dec''":
+            continue
+        if child.value == "T_LCB":
+            if child.parent.value == "func":
+                scope = SCOPES[-1].copy()
+            else:
+                scope = new_scope(scope)
+        if child.value == "T_RCB":
+            scope.pop()
         if child.value == "expr":
             traverse_expr(child)
         if child.value == "id_name'":
             check_array(child)
-        # if child.value == "term":
-        #     continue
-        # if child.value == "return_stmt":
-        #     traverse_return_stmt(child, scope)
-        # if child.value == "return_val":
-        #     continue
-        # if child.value == "stmt" and child.children[1].children[0].value == "func_call":
-        #     func_name = child.children[0].children[0].value
-        #     traverse_func_call(child.children[1].children[0], func_name, scope)
-        #     continue
+        if child.value == "term":
+            continue
+        if child.value == "return_stmt":
+            traverse_return_stmt(child, scope)
+        if child.value == "return_val":
+            continue
+        if len(child.children) > 1:
+            if child.value == "stmt" and child.children[1].children[0].value == "func_call":
+                func_name = child.children[0].children[0].value
+                traverse_func_call(child.children[1].children[0], func_name, scope)
+                continue
         # elif child.value == "if":
         #     pass # TODO: Ali
 
