@@ -115,7 +115,11 @@ def traverse_var_declaration(node, ids, var_type, scope):
         var_value = 0
         if node.children[1].children[0].value == "assign_expr":
             list_index = 1
-            var_value = expr_value(node.children[1].children[0].children[1], scope)
+            if var_type == expr_type(node.children[1].children[0].children[1], scope):
+                var_value = expr_value(node.children[1].children[0].children[1], scope)
+            else:
+                error = Error("type mismatch in variable declaration", node.row)
+                ERRORS.append(error)
 
         add_variable(var_name, var_type, scope, var_length, var_value,
                      f"{'array' if is_arr else 'variable'}", node.row)
