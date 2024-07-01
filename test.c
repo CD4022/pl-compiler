@@ -34,5 +34,5 @@ int main() {
     else{
     }
     print();
-    // does not have return but doesn't show an error
+    // does not have return but doesn't show an error. yea I know it's ok...
 }
