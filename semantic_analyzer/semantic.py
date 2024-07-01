@@ -166,7 +166,7 @@ def traverse_expr(node: parser.Node, scope):
                 if symbol.var_name == node.children[0].value:
                     symbol_scope = symbol.scope
                     if symbol_scope != scope[:len(symbol_scope)]:
-                        break  # ypu gotta check for the scope same as i did in line 389!!! my code is fine
+                        break  # ypu gotta check for the scope same as i did in line 386!!! my code is fine
                     node.node_type = symbol.var_type
                     node.imm_val = int(symbol.value) if symbol.value != None and symbol.var_type == "INT" else None
                     return "VALID", None
@@ -383,18 +383,16 @@ def traverse_func_pars(node: parser.Node, func_args, scope, depth=0):
     traverse_func_pars(node.children[expr_index + 1], func_args, scope, depth + 1)
 
 
-def check_assign_expr(node: parser.Node, scope):
-    lhs_id = node.children[0].children[0].value
-    # get symbol from the symbol table
+def check_variable_scope(node: parser.Node, var_name, scope):
     lhs_symbol_candidates = []
     for symbol in SYMBOL_TABLE:
-        if symbol.var_name == lhs_id:
+        if symbol.var_name == var_name:
             lhs_symbol_candidates.append(symbol)
 
     if len(lhs_symbol_candidates) == 0:
-        error = Error(f"variable {lhs_id} is not defined", node.row)
+        error = Error(f"variable {var_name} is not defined", node.row)
         ERRORS.append(error)
-        return
+        return None
 
     lhs_symbol = None
     for symbol in lhs_symbol_candidates:
@@ -402,14 +400,22 @@ def check_assign_expr(node: parser.Node, scope):
             lhs_symbol = symbol
             break
     if not lhs_symbol:
-        error = Error(f"variable {lhs_id} is not defined in this scope", node.row)
+        error = Error(f"variable {var_name} is not defined in this scope", node.row)
         ERRORS.append(error)
-        return
+        return None
 
-    rhs_type = expr_type(node.children[1].children[1].children[1], scope)
-    if lhs_symbol.var_type != rhs_type:
-        error = Error(f"assignment type does not match variable type", node.row)
-        ERRORS.append(error)
+    return lhs_symbol
+
+
+def check_assign_expr(node: parser.Node, scope):
+    lhs_id = node.children[0].children[0].value
+
+    lhs_symbol = check_variable_scope(node, lhs_id, scope)
+    if lhs_symbol:
+        rhs_type = expr_type(node.children[1].children[1].children[1], scope)
+        if lhs_symbol.var_type != rhs_type:
+            error = Error(f"assignment type does not match variable type", node.row)
+            ERRORS.append(error)
 
 
 def expr_type(node: parser.Node, scope):
