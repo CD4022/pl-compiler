@@ -166,7 +166,7 @@ def traverse_expr(node: parser.Node, scope):
                 if symbol.var_name == node.children[0].value:
                     symbol_scope = symbol.scope
                     if symbol_scope != scope[:len(symbol_scope)]:
-                        break  # ypu gotta check for the scope same as i did in line 386!!! my code is fine
+                        continue
                     node.node_type = symbol.var_type
                     node.imm_val = int(symbol.value) if symbol.value != None and symbol.var_type == "INT" else None
                     return "VALID", None
