@@ -306,10 +306,8 @@ def check_array(node: parser.Node, scope):
 
 
 def check_if(node: parser.Node, scope):
-    if node.value == "T_LP":
-        node = node.parent.children[3]
     _expr_type = expr_type(node, scope)
-    if _expr_type != "BOOL":
+    if _expr_type not in ["BOOL", "INVALID", "UNDEFINED"]:
         error = Error("condition in if statement must be of type BOOL", node.row)
         ERRORS.append(error)
         return
@@ -458,7 +456,10 @@ def traverse_parse_tree(node: parser.Node, scope):
                     check_assign_expr(child, scope)
                     continue
         elif child.value == "if":
-            check_if(node.parent.children[2], scope)
+            if node.parent.value == "if_block":
+                check_if(node.parent.children[2], scope)
+            else:
+                check_if(node.parent.children[3], scope)
 
         if len(child.children) != 0:
             traverse_parse_tree(child, scope)
