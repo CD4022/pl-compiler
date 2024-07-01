@@ -7,7 +7,7 @@ void print_s(char arr,int a,int b)
     a = ((a * 10) + -1);
     b = 0x3f;
     if (!true){
-        return 0;
+        return ;
     }
     else if (true){
         if (!true) {
@@ -22,10 +22,10 @@ void print_s(char arr,int a,int b)
     }
 }
 int main() {
-    int a = (5 / 1 + 9 - (-2 + (3 * (2))) / 1) + 1;
+    int a = 0xff;
     int b;
     int v = true;
-    if ((1 + 3) == a + 2){ // a is defined in the previous func so it doesn't recognize a here. if we change previous function's 'a's to something else, it works!
+    if ((1 + 3) == a + 2 + g){
         print("hi");
     }
     else if(true && !false){
@@ -34,5 +34,5 @@ int main() {
     else{
     }
     print();
-    // does not have return but doesn't show an error. yea I know it's ok...
+    return 0;
 }
