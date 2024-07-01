@@ -172,7 +172,13 @@ def traverse_expr(node: parser.Node, scope):
                     if symbol_scope != scope[:len(symbol_scope)]:
                         continue
                     node.node_type = symbol.var_type
-                    node.imm_val = int(symbol.value) if symbol.value != None and symbol.var_type == "INT" else None
+                    if symbol.value != None and symbol.var_type == "INT":
+                        node.imm_val = int(symbol.value)
+                    elif symbol.value != None and symbol.var_type == "BOOL":
+                        node.imm_val = symbol.value
+                    else:
+                        node.imm_val = None
+
                     return "VALID", None
                     
             return "UNDEFINED", None
