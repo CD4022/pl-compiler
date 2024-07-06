@@ -7,7 +7,7 @@
 - A comprehensive report on how each part of the compiler is designed should be prepared. The compiler can be implemented in any language (e.g., C++, Java, Python). However, students must mention the source of each part of the compiler they implement. If they use artificial intelligence engines (e.g., Bing), they must mention the sources.
 
 ## Lexical Analyzer
-1. Keywords
+1. *Keywords*
     - The lexical analyzer identifies the following keywords in the PL language:
 
     * if
