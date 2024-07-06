@@ -29,7 +29,7 @@
 3. Punctuation Marks
 - The punctuation marks in this language are as follows:
 
-    * Curly braces { and } are used for defining blocks.
+    * Curly braces `{` and `}` are used for defining blocks.
     * Parentheses ( and ) are used for defining and calling functions and in arithmetic expressions.
     * Square brackets [ and ] are used for defining arrays.
     * Commas , are used for separating function parameters.
