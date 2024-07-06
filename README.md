@@ -30,31 +30,31 @@
 - The punctuation marks in this language are as follows:
 
     * Curly braces `{` and `}` are used for defining blocks.
-    * Parentheses ( and ) are used for defining and calling functions and in arithmetic expressions.
-    * Square brackets [ and ] are used for defining arrays.
-    * Commas , are used for separating function parameters.
-    * Semicolons ; are used to terminate statements.
+    * Parentheses `(` and `)` are used for defining and calling functions and in arithmetic expressions.
+    * Square brackets `[` and `]` are used for defining arrays.
+    * Commas `,` are used for separating function parameters.
+    * Semicolons `;` are used to terminate statements.
 
 4. Comments
-- Comments start with // and continue to the end of the line. However, comments are not sent to the syntactic analyzer but are listed by the lexical analyzer after extracting all tokens.
+- Comments start with `//` and continue to the end of the line. However, comments are not sent to the syntactic analyzer but are listed by the lexical analyzer after extracting all tokens.
 
 5. Numeric Values
-- Numeric values can be decimal (base 10) or hexadecimal (base 16). Hexadecimal numbers start with 0x. Negative numbers are indicated by a minus sign -.
+- Numeric values can be `decimal` (base 10) or `hexadecimal` (base 16). Hexadecimal numbers start with `0x`. Negative numbers are indicated by a minus sign `-`.
 
 6. Characters and Strings
-- A character constant is represented by a single character enclosed in single quotes ('). To represent an apostrophe within a character constant, use the backslash (\). String constants are sequences of characters enclosed in double quotes (").
+- A character constant is represented by a single character enclosed in single quotes `'`. To represent an apostrophe within a character constant, use the backslash `\`. String constants are sequences of characters enclosed in double quotes `"`.
 
 7. Operators
-- Arithmetic operators include addition (+), subtraction (-), multiplication (*), division (/), and remainder (%). Relational operators include >, <, >=, <=, ==, and !=. Logical operators include &&, ||, and !. The assignment operator is =.
+- Arithmetic operators include addition `+`, subtraction `-`, multiplication `*`, division `/`, and remainder `%`. Relational operators include `>`, `<`, `>=`, `<=`, `==`, and `!=`. Logical operators include `&&`, `||`, and `!`. The assignment operator is `=`.
 
 8. Whitespace
-- Whitespace includes space ( ), newline (\n), and tab (\t) characters and separates tokens.
+- Whitespace includes space, newline `\n`, and tab `\t` characters and separates tokens.
 
 9. Token List
 - The following table lists the tokens for the PL language:
 
-    * Lexeme         Token
-    * bool           T_BOOL
+    - `Lexeme`         Token
+    - `bool`           T_BOOL
     * break          T_BREAK
     * char           T_CHAR
     * continue       T_CONTINUE
