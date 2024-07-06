@@ -8,25 +8,24 @@
 
 ## Lexical Analyzer
 1. *Keywords*
-    - The lexical analyzer identifies the following keywords in the PL language:
+- The lexical analyzer identifies the following keywords in the PL language:
+    * `if`
+    * `else`
+    * `for`
+    * `return`
+    * `int`
+    * `bool`
+    * `break`
+    * `char`
+    * `continue`
+    * `true`
+    * `flase`
+    * `print`
 
-    * if
-    * else
-    * for
-    * return
-    * int
-    * bool
-    * break
-    * char
-    * continue
-    * true
-    * flase
-    * print
-
-2. Identifiers
+2. *Identifiers*
 - An identifier is a name for an entity in a programming language. In this language, entities include variables and functions. A variable is a sequence of memory locations with a name, and a function is an entity with a name that receives several inputs and performs certain operations, returning a value in some cases. Identifiers can contain letters, digits, and underscores but cannot start with a digit or an underscore and cannot be keywords.
 
-3. Punctuation Marks
+3. *Punctuation Marks*
 - The punctuation marks in this language are as follows:
 
     * Curly braces `{` and `}` are used for defining blocks.
@@ -35,83 +34,83 @@
     * Commas `,` are used for separating function parameters.
     * Semicolons `;` are used to terminate statements.
 
-4. Comments
+4. *Comments*
 - Comments start with `//` and continue to the end of the line. However, comments are not sent to the syntactic analyzer but are listed by the lexical analyzer after extracting all tokens.
 
-5. Numeric Values
+5. *Numeric Values*
 - Numeric values can be `decimal` (base 10) or `hexadecimal` (base 16). Hexadecimal numbers start with `0x`. Negative numbers are indicated by a minus sign `-`.
 
-6. Characters and Strings
+6. *Characters and Strings*
 - A character constant is represented by a single character enclosed in single quotes `'`. To represent an apostrophe within a character constant, use the backslash `\`. String constants are sequences of characters enclosed in double quotes `"`.
 
-7. Operators
+7. *Operators*
 - Arithmetic operators include addition `+`, subtraction `-`, multiplication `*`, division `/`, and remainder `%`. Relational operators include `>`, `<`, `>=`, `<=`, `==`, and `!=`. Logical operators include `&&`, `||`, and `!`. The assignment operator is `=`.
 
-8. Whitespace
+8. *Whitespace*
 - Whitespace includes space, newline `\n`, and tab `\t` characters and separates tokens.
 
-9. Token List
+9. *Token List*
 - The following table lists the tokens for the PL language:
 
-    - `Lexeme`         Token
-    - `bool`           T_BOOL
-    * break          T_BREAK
-    * char           T_CHAR
-    * continue       T_CONTINUE
-    * else           T_ELSE
-    * false          T_FALSE
-    * for            T_FOR
-    * if             T_IF
-    * int            T_INT
-    * print          T_PRINT
-    * return         T_RETURN
-    * true           T_TRUE
-    * +              T_AOP_ADD
-    * -              T_AOP_SUB
-    * *              T_AOP_MUL
-    * /              T_AOP_DIV
-    * %              T_AOP_MOD
-    * <              T_ROP_LT
-    * >              T_ROP_GT
-    * <=             T_ROP_LE
-    * >=             T_ROP_GE
-    * ==             T_ROP_EQ
-    * !=             T_ROP_NE
-    * &&             T_LOP_AND
-    * ||             T_LOP_OR
-    * !              T_LOP_NOT
-    * =              T_ASSIGN
-    * (              T_LP
-    * )              T_RP
-    * {              T_LC
-    * }              T_RC
-    * [              T_LB
-    * ]              T_RB
-    * ;              T_SEMICOLON
-    * ,              T_COMMA
-    * variable or function names T_ID
-    * decimal integers T_DECIMAL
-    * hexadecimal integers T_HEXADECIMAL
-    * constant strings "[string]" T_STRING
-    * constant characters '[character]' T_CHARACTER
-    * //[string]\n T_COMMENT
-    * whitespace (newline, tab, and space characters) T_WHITESPACE
+    * `Lexeme`         Token
+    * `bool`           T_BOOL
+    * `break`          T_BREAK
+    * `char`           T_CHAR
+    * `continue`       T_CONTINUE
+    * `else`           T_ELSE
+    * `false`          T_FALSE
+    * `for`            T_FOR
+    * `if`             T_IF
+    * `int`            T_INT
+    * `print`          T_PRINT
+    * `return`         T_RETURN
+    * `true`           T_TRUE
+    * `+`              T_AOP_ADD
+    * `-`              T_AOP_SUB
+    * `*`              T_AOP_MUL
+    * `/`              T_AOP_DIV
+    * `%`              T_AOP_MOD
+    * `<`              T_ROP_LT
+    * `>`              T_ROP_GT
+    * `<=`             T_ROP_LE
+    * `>=`             T_ROP_GE
+    * `==`             T_ROP_EQ
+    * `!=`             T_ROP_NE
+    * `&&`            T_LOP_AND
+    * `||`             T_LOP_OR
+    * `!`              T_LOP_NOT
+    * `=`              T_ASSIGN
+    * `(`              T_LP
+    * `)`              T_RP
+    * `{`              T_LC
+    * `}`              T_RC
+    * `[`              T_LB
+    * `]`              T_RB
+    * `;`              T_SEMICOLON
+    * `,`              T_COMMA
+    * `variable or function names` T_ID
+    * `decimal integers` T_DECIMAL
+    * `hexadecimal integers` T_HEXADECIMAL
+    * `constant strings "[string]"` T_STRING
+    * `constant characters '[character]'` T_CHARACTER
+    * `//[string]\n` T_COMMENT
+    * `whitespace (newline, tab, and space characters)` T_WHITESPACE
 
 
 ## Syntax Analyzer
 - In this part of the project, we want to design and implement a syntactic analyzer for the PL programming language. The syntactic analyzer receives a sequence of tokens from the lexical analyzer and, if there are no syntactic errors in the input program, constructs a parse tree. Otherwise, it prints the error messages. The simplest method to implement the syntactic analyzer is to use a predictive parser. If the input is erroneous, the compiler should use error recovery techniques.
 
-1. Variables and Data Types
+1. *Variables and Data Types*
 - The language has three primary data types: int, char, and bool. Variables can be defined with these data types. Arrays can also be defined with a specific size and data type using square brackets [].
 
-2. Expressions
+2. *Expressions*
 - Expressions are combinations of variables, constants, and operators. The following types of expressions are allowed in the PL language:
 
     * Arithmetic expressions: a + b, c - d, e * f, g / h, i % j
     * Relational expressions: a < b, c > d, e <= f, g >= h, i == j, k != l
     * Logical expressions: a && b, c || d, !e
 
-3. Statements
+3. *Statements*
 - The following types of statements are allowed in the PL language:
 
     * Assignment statements: variable = expression;
