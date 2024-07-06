@@ -123,13 +123,13 @@
 
 - In this part of the project, we want to design and implement a semantic analyzer for the PL programming language. The semantic analyzer performs checks such as type checking, scope resolution, and function verification. It receives a parse tree from the syntactic analyzer and generates a semantic tree if there are no semantic errors in the input program. The semantic tree is created using the rules of semantic analysis.
 
-* Each identifier must be declared before use. An identifier can be a variable or a function.
-* Each scope starts with a specific block. A scope can have multiple sub-scopes. A block begins with an opening curly brace { and ends with a closing curly brace }. If a new block is started within another block, it is considered a sub-scope of the outer block. Scopes define the visibility and lifetime of variables.
-* The language has three basic data types: int, char, and bool.
-* The operands of arithmetic operators must be of type int, and the operands of logical operators must be of type bool.
-* The index of an array must be of type int and greater than or equal to zero.
-* The type of the conditional expression in an if or while statement must be bool.
-* The main function must have no parameters, and its return type must be int.
+* Each identifier must be declared before use. An identifier can be a `variable` or a `function`.
+* Each scope starts with a specific block. A scope can have multiple sub-scopes. A block begins with an opening curly brace `{` and ends with a closing curly brace `}`. If a new block is started within another block, it is considered a sub-scope of the outer block. Scopes define the visibility and lifetime of variables.
+* The language has three basic data types: `int`, `char`, and `bool`.
+* The operands of arithmetic operators must be of type `int`, and the operands of logical operators must be of type `bool`.
+* The index of an array must be of type `int` and greater than or equal to zero.
+* The type of the conditional expression in an `if` statement must be `bool`.
+* The `main` function must have no parameters, and its `return` type must be `int`.
 * Function calls must match the number and types of parameters defined in the function's declaration.
 * In an assignment statement, the type of the left-hand side must match the type of the right-hand side. If there are nested assignments, each left-hand side must match the type of the right-hand side.
 * The type of the expression in a return statement must match the return type of the function.
