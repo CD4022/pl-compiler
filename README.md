@@ -113,11 +113,11 @@
 3. *Statements*
 - The following types of statements are allowed in the PL language:
 
-    * Assignment statements: variable = expression;
-    * Conditional statements: ```if (expression) { statement } else { statement }```
-    * Loop statements: ```for (initialization; condition; increment) { statement }```
-    * Function calls: ```function_name(parameters);```
-    * Return statements: ```return expression;```
+    * Assignment statements: `variable = expression;`
+    * Conditional statements: `if (expression) { statement } else { statement }`
+    * Loop statements: `for (initialization; condition; increment) { statement }`
+    * Function calls: `function_name(parameters);`
+    * Return statements: `return expression;`
 
 ## Semantic Analyzer
 
