@@ -1,27 +1,27 @@
 # Project Description - Principles of Compiler Design
 ## Introduction
-    In this project, we intend to design and implement a compiler for a programming language named PL, which is similar to the C language. The compiler consists of a lexical analyzer, syntactic analyzer, semantic analyzer, intermediate code generator and optimizer, and an assembly code generator and optimizer. A complete compiler receives a program written in a programming language as a text file and produces the equivalent assembly code.
+- In this project, we intend to design and implement a compiler for a programming language named PL, which is similar to the C language. The compiler consists of a lexical analyzer, syntactic analyzer, semantic analyzer, intermediate code generator and optimizer, and an assembly code generator and optimizer. A complete compiler receives a program written in a programming language as a text file and produces the equivalent assembly code.
 
-    In this project, the design and implementation of the compiler do not produce assembly code, meaning it is not a complete compiler. The lexical analyzer extracts tokens from a program written in the PL programming language and sends these tokens to the syntactic analyzer, which, based on the grammar of the language, parses the tokens and constructs a parse tree using algorithms such as top-down and bottom-up parsing. If there is no error in the input program, the semantic analyzer executes the program and, in case of errors, issues error messages.
+- In this project, the design and implementation of the compiler do not produce assembly code, meaning it is not a complete compiler. The lexical analyzer extracts tokens from a program written in the PL programming language and sends these tokens to the syntactic analyzer, which, based on the grammar of the language, parses the tokens and constructs a parse tree using algorithms such as top-down and bottom-up parsing. If there is no error in the input program, the semantic analyzer executes the program and, in case of errors, issues error messages.
 
-    A comprehensive report on how each part of the compiler is designed should be prepared. The compiler can be implemented in any language (e.g., C++, Java, Python). However, students must mention the source of each part of the compiler they implement. If they use artificial intelligence engines (e.g., Bing), they must mention the sources.
+- A comprehensive report on how each part of the compiler is designed should be prepared. The compiler can be implemented in any language (e.g., C++, Java, Python). However, students must mention the source of each part of the compiler they implement. If they use artificial intelligence engines (e.g., Bing), they must mention the sources.
 
 ## Lexical Analyzer
-    - Keywords
-        - The lexical analyzer identifies the following keywords in the PL language:
+- Keywords
+    - The lexical analyzer identifies the following keywords in the PL language:
 
-        * if
-        * else
-        * for
-        * return
-        * int
-        * bool
-        * break
-        * char
-        * continue
-        * true
-        * flase
-        * print
+    * if
+    * else
+    * for
+    * return
+    * int
+    * bool
+    * break
+    * char
+    * continue
+    * true
+    * flase
+    * print
 
 1. Identifiers
 - An identifier is a name for an entity in a programming language. In this language, entities include variables and functions. A variable is a sequence of memory locations with a name, and a function is an entity with a name that receives several inputs and performs certain operations, returning a value in some cases. Identifiers can contain letters, digits, and underscores but cannot start with a digit or an underscore and cannot be keywords.
