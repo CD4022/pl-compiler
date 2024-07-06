@@ -1,4 +1,4 @@
-# Project Description - Principles of Compiler Design
+# PL Language - Principles of Compiler Design
 ## Introduction
 - In this project, we intend to design and implement a compiler for a programming language named PL, which is similar to the C language. The compiler consists of a lexical analyzer, syntactic analyzer, semantic analyzer, intermediate code generator and optimizer, and an assembly code generator and optimizer. A complete compiler receives a program written in a programming language as a text file and produces the equivalent assembly code.
 
