@@ -101,7 +101,7 @@
 - In this part of the project, we want to design and implement a syntactic analyzer for the PL programming language. The syntactic analyzer receives a sequence of tokens from the lexical analyzer and, if there are no syntactic errors in the input program, constructs a parse tree. Otherwise, it prints the error messages. The simplest method to implement the syntactic analyzer is to use a predictive parser. If the input is erroneous, the compiler should use error recovery techniques.
 
 1. *Variables and Data Types*
-- The language has three primary data types: int, char, and bool. Variables can be defined with these data types. Arrays can also be defined with a specific size and data type using square brackets [].
+- The language has three primary data types: `int`, `char`, and `bool`. Variables can be defined with these data types. Arrays can also be defined with a specific size and data type using square brackets `[]`.
 
 2. *Expressions*
 - Expressions are combinations of variables, constants, and operators. The following types of expressions are allowed in the PL language:
