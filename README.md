@@ -7,7 +7,7 @@
 - A comprehensive report on how each part of the compiler is designed should be prepared. The compiler can be implemented in any language (e.g., C++, Java, Python). However, students must mention the source of each part of the compiler they implement. If they use artificial intelligence engines (e.g., Bing), they must mention the sources.
 
 ## Lexical Analyzer
-- Keywords
+1. Keywords
     - The lexical analyzer identifies the following keywords in the PL language:
 
     * if
@@ -23,10 +23,10 @@
     * flase
     * print
 
-1. Identifiers
+2. Identifiers
 - An identifier is a name for an entity in a programming language. In this language, entities include variables and functions. A variable is a sequence of memory locations with a name, and a function is an entity with a name that receives several inputs and performs certain operations, returning a value in some cases. Identifiers can contain letters, digits, and underscores but cannot start with a digit or an underscore and cannot be keywords.
 
-2. Punctuation Marks
+3. Punctuation Marks
 - The punctuation marks in this language are as follows:
 
     * Curly braces { and } are used for defining blocks.
@@ -35,22 +35,22 @@
     * Commas , are used for separating function parameters.
     * Semicolons ; are used to terminate statements.
 
-3. Comments
+4. Comments
 - Comments start with // and continue to the end of the line. However, comments are not sent to the syntactic analyzer but are listed by the lexical analyzer after extracting all tokens.
 
-4. Numeric Values
+5. Numeric Values
 - Numeric values can be decimal (base 10) or hexadecimal (base 16). Hexadecimal numbers start with 0x. Negative numbers are indicated by a minus sign -.
 
-5. Characters and Strings
+6. Characters and Strings
 - A character constant is represented by a single character enclosed in single quotes ('). To represent an apostrophe within a character constant, use the backslash (\). String constants are sequences of characters enclosed in double quotes (").
 
-6. Operators
+7. Operators
 - Arithmetic operators include addition (+), subtraction (-), multiplication (*), division (/), and remainder (%). Relational operators include >, <, >=, <=, ==, and !=. Logical operators include &&, ||, and !. The assignment operator is =.
 
-7. Whitespace
+8. Whitespace
 - Whitespace includes space ( ), newline (\n), and tab (\t) characters and separates tokens.
 
-8. Token List
+9. Token List
 - The following table lists the tokens for the PL language:
 
     * Lexeme         Token
